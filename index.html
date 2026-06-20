@@ -1,268 +1,339 @@
-```html
+Substitua as chaves e o id
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Dindin Gourmet | Feito com Amor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin | Dindin Gourmet</title>
     <!-- Tailwind CSS v4 para estilização premium -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Script do Supabase para conexão com o banco de dados -->
+    <!-- Script do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        :root {
-            --cor-fundo: #fcf9f2;      
-            --cor-card: #f7f2e7;       
-            --cor-texto-escuro: #2b1a11; 
-            --cor-detalhe: #d9a05b;    
-        }
-        body { background-color: var(--cor-fundo); color: var(--cor-texto-escuro); font-family: 'Segoe UI', Georgia, serif; }
-        
-        .watermark {
-            position: fixed; bottom: 15px; right: 20px;
-            color: var(--cor-texto-escuro); font-size: 0.75em; opacity: 0.3;
-            z-index: 999; cursor: pointer; font-weight: 600; letter-spacing: 0.5px;
-            transition: opacity 0.2s;
-            user-select: none;
-            -webkit-user-select: none;
-            text-decoration: none;
-        }
-        .watermark:hover { opacity: 0.8; }
-    </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between">
+<body class="bg-[#fcf9f2] text-[#2b1a11] font-sans min-h-screen">
 
-<!-- MARCA D'ÁGUA DIRECIONANDO DIRETO PRO ADMIN (SEM BLOQUEIOS) -->
-<a href="admin.html" class="watermark">by VR Web Solutions</a>
-
-<!-- TOP BAR INFORMATIVO -->
-<div class="bg-[#2b1a11] text-[#fcf9f2] text-xs py-2 px-4 flex flex-wrap justify-between items-center gap-2 md:px-12 border-b border-white/5">
-    <div class="flex items-center gap-1">🛵 Entregas exclusivamente em Sobral - CE</div>
-    <div class="flex items-center gap-1">✨ Feito com ingredientes selecionados</div>
-    <div class="font-semibold text-[#d9a05b]">(88) 99272-1857</div>
-</div>
-
-<!-- HEADER / NAV -->
-<header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 px-4 py-4 md:px-12 flex justify-between items-center border-b border-[#2b1a11]/5 shadow-xs">
-    <div class="flex flex-col items-start leading-none">
-        <span class="text-2xl font-serif font-black tracking-tight" style="color: var(--cor-texto-escuro)">Dindin</span>
-        <span class="text-xs uppercase tracking-[0.3em] font-bold mt-0.5" style="color: var(--cor-detalhe)">• Gourmet •</span>
-    </div>
-    <nav class="hidden md:flex gap-8 text-sm font-medium tracking-wide" style="color: var(--cor-texto-escuro)">
-        <a href="#" class="hover:text-[--cor-detalhe] transition">Início</a>
-        <a href="#cardapio" class="hover:text-[--cor-detalhe] transition">Sabores</a>
-        <a href="#beneficios" class="hover:text-[--cor-detalhe] transition">Diferenciais</a>
-        <a href="#avaliacoes" class="hover:text-[--cor-detalhe] transition">Avaliações</a>
-    </nav>
-    <div class="w-28 md:w-auto"></div>
-</header>
-
-<!-- HERO SECTION -->
-<section class="max-w-6xl mx-auto px-6 py-12 md:py-20 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-    <div class="text-left">
-        <span class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--cor-detalhe)">Feito artesanalmente</span>
-        <h2 class="text-4xl md:text-6xl font-serif font-bold mt-2 mb-6 leading-[1.1]" style="color: var(--cor-texto-escuro)">
-            Dindin gourmet <br><span class="italic font-normal font-sans" style="color: var(--cor-detalhe)">feito com amor ♡</span>
-        </h2>
-        <p class="text-stone-600 max-w-md leading-relaxed mb-8 text-base">
-            Cremoso, saboroso e produzido com insumos de altíssima qualidade para transformar os seus momentos em experiências inesquecíveis e incrivelmente refrescantes.
-        </p>
-        <a href="#cardapio" class="inline-flex items-center gap-3 text-white font-bold py-4 px-8 rounded-full shadow-lg text-sm uppercase tracking-wider transition hover:scale-105" 
-           style="background-color: var(--cor-detalhe)">
-            Ver sabores disponíveis
-        </a>
-    </div>
-    <div class="relative flex justify-center">
-        <div class="absolute -top-4 -right-4 bg-white border border-[#d9a05b]/30 rounded-full px-4 py-4 text-center w-24 h-24 flex flex-col justify-center items-center shadow-xs">
-            <span class="text-[9px] uppercase font-bold tracking-wider text-stone-400">Textura</span>
-            <span class="text-xs font-bold leading-tight" style="color: var(--cor-texto-escuro)">Super Cremosa</span>
+    <!-- HEADER DO PAINEL -->
+    <header class="bg-[#2b1a11] text-[#fcf9f2] p-6 shadow-md flex justify-between items-center">
+        <div>
+            <h1 class="text-xl font-serif font-black tracking-tight">Painel de Controle Administrativo</h1>
+            <p class="text-[10px] text-[#d9a05b] uppercase tracking-widest font-bold mt-1">Gerenciamento Geral do Cardápio</p>
         </div>
-        <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&q=80&w=600" alt="Dindins Gourmet Cremosos" class="w-full max-w-md h-[380px] object-cover rounded-3xl shadow-xl border-4 border-white">
-    </div>
-</section>
-
-<!-- BENEFÍCIOS -->
-<section id="beneficios" class="bg-white border-y border-[#2b1a11]/5 py-10 px-6">
-    <div class="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-left text-xs">
-        <div class="flex gap-3 items-start">
-            <span class="text-2xl">❄️</span>
-            <div><h4 class="font-bold mb-1 uppercase tracking-wide">Entrega em Sobral</h4><p class="text-stone-500">Seu dindin chega congelado e prontinho.</p></div>
+        <div class="text-right text-xs">
+            <button onclick="window.location.href='index.html'" class="px-4 py-2 bg-[#d9a05b] hover:bg-[#b88243] text-white font-bold rounded-xl transition cursor-pointer">
+                ← Ver Cardápio Público
+            </button>
         </div>
-        <div class="flex gap-3 items-start">
-            <span class="text-2xl">📦</span>
-            <div><h4 class="font-bold mb-1 uppercase tracking-wide">Embalagem Segura</h4><p class="text-stone-500">Cuidadosamente higienizados e selados.</p></div>
-        </div>
-        <div class="flex gap-3 items-start">
-            <span class="text-2xl">🍓</span>
-            <div><h4 class="font-bold mb-1 uppercase tracking-wide">100% Artesanal</h4><p class="text-stone-500">Frutas frescas e as melhores marcas.</p></div>
-        </div>
-        <div class="flex gap-3 items-start">
-            <span class="text-2xl">💳</span>
-            <div><h4 class="font-bold mb-1 uppercase tracking-wide">Pagamento Fácil</h4><p class="text-stone-500">Aceitamos Pix e cartões na entrega.</p></div>
-        </div>
-    </div>
-</section>
+    </header>
 
-<!-- CARDÁPIO VIRTUAL -->
-<section id="cardapio" class="max-w-6xl mx-auto px-6 py-16 text-center">
-    <span class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--cor-detalhe)">Nossos Sabores</span>
-    <h3 class="text-3xl font-serif font-bold mt-1 mb-12" style="color: var(--cor-texto-escuro)">Escolha o seu preferido</h3>
-    <div id="lista-produtos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        <p class="col-span-full text-center py-12 text-stone-400 animate-pulse font-medium">Carregando nosso cardápio de dindins...</p>
-    </div>
-</section>
+    <main class="max-w-6xl mx-auto p-6 space-y-8">
+        
+        <!-- SEÇÃO SUPERIOR: PRODUTOS E AVALIAÇÕES -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- COLUNA ESQUERDA: FORMULÁRIO (CADASTRAR / EDITAR) -->
+            <div class="lg:col-span-1 space-y-6">
+                <div class="bg-[#f7f2e7] border border-[#2b1a11]/10 rounded-3xl p-6 shadow-xs">
+                    <h2 id="form-titulo" class="text-lg font-serif font-bold mb-2">Cadastrar Novo Dindin</h2>
+                    <p class="text-xs text-stone-500 mb-6">Preencha as informações para atualizar seu cardápio em tempo real.</p>
+                    
+                    <form id="form-produto" class="space-y-4">
+                        <input type="hidden" id="prod-id">
+                        
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Nome do Sabor</label>
+                            <input type="text" id="prod-nome" required placeholder="Ex: Ninho com Nutella" 
+                                   class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b]">
+                        </div>
 
-<!-- SEÇÃO AVALIAÇÕES REAIS DOS CLIENTES -->
-<section id="avaliacoes" class="max-w-6xl mx-auto px-6 py-16 border-t border-[#2b1a11]/5">
-    <div class="text-center mb-12">
-        <span class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--cor-detalhe)">O que dizem sobre nós</span>
-        <h3 class="text-3xl font-serif font-bold mt-1" style="color: var(--cor-texto-escuro)">Avaliações dos Clientes</h3>
-    </div>
-    <div id="grid-avaliacoes" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <p class="col-span-full text-center text-stone-400 animate-pulse text-sm">Carregando avaliações dos clientes...</p>
-    </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Preço (R$)</label>
+                                <input type="number" step="0.01" id="prod-preco" required placeholder="5.00" 
+                                       class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b]">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Disponível?</label>
+                                <select id="prod-disponivel" class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b]">
+                                    <option value="true">Sim (Visível)</option>
+                                    <option value="false">Não (Ocultar)</option>
+                                </select>
+                            </div>
+                        </div>
 
-    <div class="max-w-xl mx-auto bg-[#f7f2e7] border border-[#2b1a11]/5 rounded-3xl p-6 md:p-8 text-left shadow-xs">
-        <h4 class="font-serif font-bold text-lg mb-2 text-[#2b1a11]">Gostou do seu dindin? Deixe sua avaliação!</h4>
-        <form id="form-avaliacao" class="space-y-4">
-            <div>
-                <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Seu Nome</label>
-                <input type="text" id="aval-nome" required class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-[#fdfcf7] text-sm focus:border-[#d9a05b]">
-            </div>
-            <div>
-                <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Sua Nota (Estrelas)</label>
-                <div class="flex gap-2 text-2xl" id="seletor-estrelas">
-                    <button type="button" class="star-btn text-stone-300 hover:text-amber-500 transition cursor-pointer" data-value="1">★</button>
-                    <button type="button" class="star-btn text-stone-300 hover:text-amber-500 transition cursor-pointer" data-value="2">★</button>
-                    <button type="button" class="star-btn text-stone-300 hover:text-amber-500 transition cursor-pointer" data-value="3">★</button>
-                    <button type="button" class="star-btn text-stone-300 hover:text-amber-500 transition cursor-pointer" data-value="4">★</button>
-                    <button type="button" class="star-btn text-stone-300 hover:text-amber-500 transition cursor-pointer" data-value="5">★</button>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Descrição / Ingredientes</label>
+                            <textarea id="prod-descricao" rows="3" placeholder="Ex: Base super cremosa de leite ninho com recheio legítimo de Nutella." 
+                                      class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b] resize-none"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Link da Imagem (URL)</label>
+                            <input type="url" id="prod-imagem" placeholder="https://linkdafoto.com/imagem.jpg" 
+                                   class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b]">
+                            <p class="text-[10px] text-stone-500 mt-1">Dica: Você pode upar fotos em sites como o <a href="https://imgbb.com/" target="_blank" class="text-[#d9a05b] underline">ImgBB</a> e colar o link direto aqui.</p>
+                        </div>
+
+                        <div class="flex gap-2 pt-2">
+                            <button type="submit" id="btn-salvar" class="flex-1 py-3 text-white font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer transition shadow-md bg-[#2b1a11] hover:bg-[#3d2518]">
+                                Salvar Sabor
+                            </button>
+                            <button type="button" id="btn-cancelar" class="hidden py-3 px-4 text-stone-600 font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer transition bg-stone-200 hover:bg-stone-300">
+                                Cancelar
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
-            <div>
-                <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Seu Comentário</label>
-                <textarea id="aval-comentario" required rows="3" class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-[#fdfcf7] text-sm focus:border-[#d9a05b] resize-none"></textarea>
+
+            <!-- COLUNA DIREITA: LISTAGEM DE PRODUTOS E COMENTÁRIOS -->
+            <div class="lg:col-span-2 space-y-8">
+                
+                <!-- LISTA DE PRODUTOS CADASTRADOS -->
+                <div class="bg-white border border-[#2b1a11]/5 rounded-3xl p-6 shadow-xs">
+                    <h3 class="text-lg font-serif font-bold mb-4 flex justify-between items-center">
+                        <span>🍦 Sabores no Cardápio</span>
+                        <span id="total-produtos" class="text-xs bg-[#f7f2e7] text-[#2b1a11] px-3 py-1 rounded-full font-sans font-bold">0</span>
+                    </h3>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm border-collapse">
+                            <thead>
+                                <tr class="border-b border-stone-200 text-stone-500 text-xs uppercase tracking-wider">
+                                    <th class="pb-3 font-bold">Foto</th>
+                                    <th class="pb-3 font-bold">Sabor</th>
+                                    <th class="pb-3 font-bold">Preço</th>
+                                    <th class="pb-3 font-bold">Status</th>
+                                    <th class="pb-3 text-right font-bold">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela-produtos" class="divide-y divide-stone-100">
+                                <tr>
+                                    <td colspan="5" class="py-6 text-center text-stone-400 animate-pulse">Buscando dindins...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- GERENCIADOR DE COMENTÁRIOS / AVALIAÇÕES -->
+                <div class="bg-white border border-[#2b1a11]/5 rounded-3xl p-6 shadow-xs">
+                    <h3 class="text-lg font-serif font-bold mb-4 flex justify-between items-center">
+                        <span>💬 Avaliações dos Clientes</span>
+                        <span id="total-comentarios" class="text-xs bg-[#f7f2e7] text-[#2b1a11] px-3 py-1 rounded-full font-sans font-bold">0</span>
+                    </h3>
+                    
+                    <div class="space-y-4" id="lista-admin-avaliacoes">
+                        <p class="text-center text-stone-400 py-4 animate-pulse text-sm">Carregando comentários...</p>
+                    </div>
+                </div>
+
             </div>
-            <button type="submit" class="w-full py-3 text-white font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer transition shadow-md" style="background-color: var(--cor-texto-escuro);">Enviar Avaliação Real</button>
-        </form>
-    </div>
-</section>
+        </div>
 
-<footer class="bg-[#1e120c] text-[#e3dac9] text-xs mt-16 border-t border-white/5">
-    <div class="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
-        <div><h5 class="text-white font-bold uppercase tracking-wider mb-3 text-sm">Dindin Supremo</h5><p class="text-stone-400">Leve sabor e cremosidade para o seu dia a dia.</p></div>
-        <div><h5 class="text-white font-bold uppercase tracking-wider mb-3 text-sm">Fale Conosco</h5><p class="text-[#d9a05b] font-bold text-sm">(88) 99272-1857</p></div>
-        <div><h5 class="text-white font-bold uppercase tracking-wider mb-3 text-sm">Garantias</h5><p class="text-stone-400">Pedidos seguros diretos via WhatsApp.</p></div>
-    </div>
-    <div class="border-t border-white/5 py-6 text-center text-stone-500 flex flex-col sm:flex-row justify-between items-center max-w-6xl mx-auto px-6 gap-2">
-        <p>&copy; 2026 Dindin Supremo Gourmet. Todos os direitos reservados.</p>
-        <p>Site incrivelmente desenvolvido por <span class="text-[#d9a05b] font-bold">VR Web Solutions</span></p>
-    </div>
-</footer>
+        <!-- 💰 SEÇÃO DE BRINDE: FLUXO DE CAIXA -->
+        <hr class="border-stone-200 my-8">
+        
+        <div class="bg-[#f7f2e7] border border-[#2b1a11]/10 rounded-3xl p-6 shadow-xs">
+            <h3 class="text-xl font-serif font-bold text-[#2b1a11] mb-2 flex items-center gap-2">💵 Controle de Caixa e Finanças</h3>
+            <p class="text-xs text-stone-500 mb-6">Acompanhe as vendas, custos de produção e lucro acumulado.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <!-- Cards de Resumo -->
+                <div class="bg-white p-4 rounded-2xl border border-stone-200 text-left">
+                    <span class="text-[10px] text-stone-400 font-bold uppercase tracking-wider">Total Entradas</span>
+                    <h4 id="caixa-entradas" class="text-xl font-bold text-emerald-700 mt-1">R$ 0,00</h4>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-stone-200 text-left">
+                    <span class="text-[10px] text-stone-400 font-bold uppercase tracking-wider">Total Saídas</span>
+                    <h4 id="caixa-saidas" class="text-xl font-bold text-rose-700 mt-1">R$ 0,00</h4>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-stone-200 text-left md:col-span-2">
+                    <span class="text-[10px] text-stone-400 font-bold uppercase tracking-wider">Saldo em Caixa</span>
+                    <h4 id="caixa-saldo" class="text-xl font-black text-[#2b1a11] mt-1">R$ 0,00</h4>
+                </div>
+            </div>
 
-<script type="module">
-    const ADMIN_WHATSAPP = "5588992721857"; 
-    const SUPABASE_URL = "https://LHD9lPGKfZ6u9WLaAlNio9lKDTaaRQla9XcLr4iV.supabase.co";
-    const SUPABASE_KEY = "sKtR5OHOmgq2BDUWEifW3XG1PB9V0QthUaYI1lok"; 
-
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    let notaSelecionada = 5;
-
-    // CARREGAR PRODUTOS DO BANCO
-    async function carregarProdutos() {
-        const container = document.getElementById('lista-produtos');
-        try {
-            const { data: produtos, error } = await supabase.from('produtos').select('*').eq('disponivel', true).order('nome');
-            container.innerHTML = '';
-            if (error || !produtos || produtos.length === 0) {
-                container.innerHTML = '<p class="col-span-full text-center text-stone-400 py-6">Nenhum dindin disponível no momento. 🤎</p>';
-                return;
-            }
-            produtos.forEach(p => {
-                const card = document.createElement('div');
-                card.className = 'bg-[#f7f2e7] border border-[#2b1a11]/5 rounded-3xl p-5 flex flex-col justify-between text-center transition hover:-translate-y-1 duration-200';
-                card.innerHTML = `
-                    <img src="${p.imagem_url || 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&q=80&w=400'}" alt="${p.nome}" class="w-full h-44 object-cover rounded-2xl mb-4 shadow-inner">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                <!-- Formulário de Movimentação -->
+                <form id="form-caixa" class="bg-white p-4 rounded-2xl border border-stone-200 space-y-4 text-left">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-stone-700">Nova Movimentação</h4>
                     <div>
-                        <h4 class="font-serif font-bold text-lg mb-1 text-[#2b1a11]">${p.nome}</h4>
-                        <p class="text-xs text-stone-500 leading-relaxed mb-4">${p.descricao || 'Feito artesanalmente com os melhores ingredientes.'}</p>
+                        <label class="block text-[11px] font-bold text-stone-600 mb-1">Descrição / Motivo</label>
+                        <input type="text" id="caixa-descricao" required placeholder="Ex: Venda de 5 dindins, Compra de Leite Condensado" class="w-full p-2.5 border border-[#d1c7bd] rounded-xl bg-stone-50 text-xs outline-none focus:border-[#d9a05b]">
                     </div>
-                    <div>
-                        <span class="block text-2xl font-bold mb-4 text-[#2b1a11]">R$ ${Number(p.preco).toFixed(2).replace('.', ',')}</span>
-                        <button class="w-full py-3 bg-[#2b1a11] hover:bg-[#3d2518] text-white font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer transition btn-comprar">Quero esse</button>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[11px] font-bold text-stone-600 mb-1">Valor (R$)</label>
+                            <input type="number" step="0.01" id="caixa-valor" required placeholder="0.00" class="w-full p-2.5 border border-[#d1c7bd] rounded-xl bg-stone-50 text-xs outline-none focus:border-[#d9a05b]">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-stone-600 mb-1">Tipo</label>
+                            <select id="caixa-tipo" class="w-full p-2.5 border border-[#d1c7bd] rounded-xl bg-stone-50 text-xs outline-none focus:border-[#d9a05b]">
+                                <option value="entrada" class="text-emerald-700 font-bold">➕ Entrada (Venda)</option>
+                                <option value="saida" class="text-rose-700 font-bold">➖ Saída (Gasto)</option>
+                            </select>
+                        </div>
                     </div>
-                `;
-                card.querySelector('.btn-comprar').addEventListener('click', () => {
-                    const txt = `Olá! Gostaria de pedir esse sabor maravilhoso:\n\n🍦 Sabor: ${p.nome}\n💰 Valor: R$ ${Number(p.preco).toFixed(2).replace('.', ',')}\n📍 Entrega: Sobral - CE`;
-                    window.location.href = `https://wa.me/${ADMIN_WHATSAPP}?text=${encodeURIComponent(txt)}`;
+                    <button type="submit" class="w-full py-2.5 bg-[#2b1a11] hover:bg-stone-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-xs cursor-pointer">
+                        Lançar no Caixa
+                    </button>
+                </form>
+
+                <!-- Histórico de Transações -->
+                <div class="lg:col-span-2 bg-white p-4 rounded-2xl border border-stone-200 text-left h-64 flex flex-col">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-stone-700 mb-3">Histórico Recente</h4>
+                    <div id="historico-caixa" class="overflow-y-auto flex-1 space-y-2 pr-1 text-xs divide-y divide-stone-100">
+                        <p class="text-center text-stone-400 py-6 animate-pulse">Carregando movimentações...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        // CONFIGURAÇÃO REAL DO SEU SUPABASE
+        const SUPABASE_URL = "https://chssifwpqrehztdyfssl.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_fRdHLOKe1zxnVbUgdqiB1g_i3LPqDSE"; 
+
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // ELEMENTOS DO DOM (CARDÁPIO)
+        const formProduto = document.getElementById('form-produto');
+        const prodId = document.getElementById('prod-id');
+        const prodNome = document.getElementById('prod-nome');
+        const prodPreco = document.getElementById('prod-preco');
+        const prodDisponivel = document.getElementById('prod-disponivel');
+        const prodDescricao = document.getElementById('prod-descricao');
+        const prodImagem = document.getElementById('prod-imagem');
+        const formTitulo = document.getElementById('form-titulo');
+        const btnSalvar = document.getElementById('btn-salvar');
+        const btnCancelar = document.getElementById('btn-cancelar');
+        const tabelaProdutos = document.getElementById('tabela-produtos');
+        const listaAvaliacoes = document.getElementById('lista-admin-avaliacoes');
+
+        // ELEMENTOS DO DOM (CAIXA)
+        const formCaixa = document.getElementById('form-caixa');
+        const caixaDescricao = document.getElementById('caixa-descricao');
+        const caixaValor = document.getElementById('caixa-valor');
+        const caixaTipo = document.getElementById('caixa-tipo');
+        const historicoCaixa = document.getElementById('historico-caixa');
+
+        // FUNÇÃO: CARREGAR PRODUTOS NA TABELA
+        async function renderizarProdutos() {
+            try {
+                const { data: produtos, error } = await supabase.from('produtos').select('*').order('nome', { ascending: true });
+                if (error) throw error;
+                
+                document.getElementById('total-produtos').innerText = produtos.length;
+                tabelaProdutos.innerHTML = '';
+                
+                if (produtos.length === 0) {
+                    tabelaProdutos.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-stone-400 text-xs">Nenhum sabor cadastrado ainda.</td></tr>`;
+                    return;
+                }
+
+                produtos.forEach(p => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-stone-50/50 transition-colors';
+                    tr.innerHTML = `
+                        <td class="py-3">
+                            <img src="${p.imagem_url || 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&q=80&w=100'}" 
+                                 class="w-10 h-10 object-cover rounded-xl border border-stone-200">
+                        </td>
+                        <td class="py-3 font-bold text-stone-800 text-xs">${p.nome}</td>
+                        <td class="py-3 text-xs">R$ ${Number(p.preco).toFixed(2).replace('.', ',')}</td>
+                        <td class="py-3 text-xs">
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${p.disponivel ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                                ${p.disponivel ? 'Ativo' : 'Oculto'}
+                            </span>
+                        </td>
+                        <td class="py-3 text-right space-x-1 text-xs">
+                            <button class="btn-editar bg-[#d9a05b] text-white px-2.5 py-1 rounded-lg font-medium cursor-pointer hover:bg-[#b88243] transition">Editar</button>
+                            <button class="btn-deletar bg-rose-600 text-white px-2.5 py-1 rounded-lg font-medium cursor-pointer hover:bg-rose-700 transition">Excluir</button>
+                        </td>
+                    `;
+
+                    tr.querySelector('.btn-editar').addEventListener('click', () => prepararEdicao(p));
+                    tr.querySelector('.btn-deletar').addEventListener('click', () => deletarProduto(p.id, p.nome));
+
+                    tabelaProdutos.appendChild(tr);
                 });
-                container.appendChild(card);
-            });
-        } catch (e) { container.innerHTML = '<p class="col-span-full text-center text-red-700 py-6">Erro ao carregar o catálogo.</p>'; }
-    }
+            } catch (err) { console.error('Erro ao listar produtos:', err); }
+        }
 
-    // AVALIAÇÕES
-    const botoesEstrelas = document.querySelectorAll('.star-btn');
-    function atualizarEstrelasForm(nota) {
-        notaSelecionada = nota;
-        botoesEstrelas.forEach(btn => {
-            const val = parseInt(btn.getAttribute('data-value'));
-            if (val <= nota) {
-                btn.classList.remove('text-stone-300');
-                btn.classList.add('text-amber-500');
-            } else {
-                btn.classList.remove('text-amber-500');
-                btn.classList.add('text-stone-300');
-            }
+        // FUNÇÃO: SALVAR OU ATUALIZAR PRODUTO
+        formProduto.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                nome: prodNome.value.trim(),
+                preco: parseFloat(prodPreco.value),
+                disponivel: prodDisponivel.value === 'true',
+                descricao: prodDescricao.value.trim(),
+                imagem_url: prodImagem.value.trim() || null
+            };
+
+            try {
+                if (prodId.value) {
+                    const { error } = await supabase.from('produtos').update(payload).eq('id', prodId.value);
+                    if (error) throw error;
+                    alert('Sabor atualizado com sucesso! ✨');
+                } else {
+                    const { error } = await supabase.from('produtos').insert([payload]);
+                    if (error) throw error;
+                    alert('Novo sabor adicionado ao cardápio! 🍦');
+                }
+                resetarFormulario();
+                renderizarProdutos();
+            } catch (err) { alert('Erro ao salvar.'); }
         });
-    }
 
-    botoesEstrelas.forEach(btn => {
-        btn.addEventListener('click', () => atualizarEstrelasForm(parseInt(btn.getAttribute('data-value'))));
-    });
-    atualizarEstrelasForm(5);
+        function prepararEdicao(p) {
+            prodId.value = p.id;
+            prodNome.value = p.nome;
+            prodPreco.value = p.preco;
+            prodDisponivel.value = String(p.disponivel);
+            prodDescricao.value = p.descricao || '';
+            prodImagem.value = p.imagem_url || '';
+            formTitulo.innerText = "Editar Sabor";
+            btnSalvar.innerText = "Atualizar Sabor";
+            btnCancelar.classList.remove('hidden');
+        }
 
-    async function carregarAvaliacoes() {
-        const container = document.getElementById('grid-avaliacoes');
-        try {
-            const { data: avaliacoes, error } = await supabase.from('avaliacoes').select('*').order('criado_em', { ascending: false }).limit(6);
-            if (error || !avaliacoes || avaliacoes.length === 0) {
-                container.innerHTML = '<p class="col-span-full text-center text-stone-400 py-6 text-xs">Nenhuma avaliação ainda. Seja o primeiro! 🤎</p>';
-                return;
+        async function deletarProduto(id, nome) {
+            if (confirm(`Tem certeza que deseja apagar o sabor "${nome}" permanentemente do cardápio?`)) {
+                try {
+                    const { error } = await supabase.from('produtos').delete().eq('id', id);
+                    if (error) throw error;
+                    renderizarProdutos();
+                } catch (err) { alert('Erro ao excluir.'); }
             }
-            container.innerHTML = '';
-            avaliacoes.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'bg-white p-6 rounded-3xl border border-stone-100 text-left shadow-xs flex flex-col justify-between';
-                card.innerHTML = `
-                    <p class="text-sm italic text-stone-600 leading-relaxed mb-4">"${item.comentario}"</p>
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs">${'⭐'.repeat(item.estrelas)}</span>
-                        <span class="text-xs font-bold text-[#2b1a11]">${item.nome}</span>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        } catch (e) { container.innerHTML = '<p class="col-span-full text-center text-red-700 py-6 text-xs">Erro ao carregar depoimentos.</p>'; }
-    }
+        }
 
-    document.getElementById('form-avaliacao').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const nome = document.getElementById('aval-nome').value.trim();
-        const comentario = document.getElementById('aval-comentario').value.trim();
-        try {
-            const { error } = await supabase.from('avaliacoes').insert([{ nome, estrelas: notaSelecionada, comentario }]);
-            if (error) throw error;
-            alert('Muito obrigado por sua avaliação! ✨');
-            document.getElementById('form-avaliacao').reset();
-            atualizarEstrelasForm(5);
-            carregarAvaliacoes();
-        } catch (err) { alert('Erro ao enviar avaliação.'); }
-    });
+        function resetarFormulario() {
+            formProduto.reset();
+            prodId.value = '';
+            formTitulo.innerText = "Cadastrar Novo Dindin";
+            btnSalvar.innerText = "Salvar Sabor";
+            btnCancelar.classList.add('hidden');
+        }
+        btnCancelar.addEventListener('click', resetarFormulario);
 
-    carregarProdutos();
-    carregarAvaliacoes();
-</script>
-</body>
-</html>
-```
+        // FUNÇÃO: GERENCIAR E CARREGAR AVALIAÇÕES
+        async function renderizarAvaliacoes() {
+            try {
+                const { data: avaliacoes, error } = await supabase.from('avaliacoes').select('*').order('criado_em', { ascending: false });
+                if (error) throw error;
+
+                document.getElementById('total-comentarios').innerText = avaliacoes.length;
+                listaAvaliacoes.innerHTML = '';
+
+                if (avaliacoes.length === 0) {
+                    listaAvaliacoes.innerHTML = '<p class="text-center text-stone-400 py-4 text-xs">Nenhum comentário publicado.</p>';
+                    return;
+                }
+
+                avaliacoes.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'bg-[#f7f2e7]/40 border border-stone-200/60 p-4 rounded-2xl flex flex-col md:fl
+Para esses id:LHD9lPGKfZ6u9WLaAlNio9lKDTaaRQla9XcLr4iV
+Chave:sKtR5OHOmgq2BDUWEifW3XG1PB9V0QthUaYI1lok
