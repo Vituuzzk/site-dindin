@@ -9,7 +9,7 @@
     <!-- Script do Supabase para conexão com o banco de dados -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* Cores customizadas baseadas na imagem 1001060332.png */
+        /* Cores customizadas baseadas na identidade visual gourmet */
         :root {
             --cor-fundo: #fcf9f2;      /* Creme claro de fundo */
             --cor-card: #f7f2e7;       /* Bege dos cards */
@@ -250,10 +250,10 @@
     // ⚙️ CONFIGURAÇÃO DO SEU WHATSAPP DE VENDAS
     const ADMIN_WHATSAPP = "5588988057698"; 
 
-    // CONFIGURAÇÃO DO SEU SUPABASE
-    const SUPABASE_URL = "SUA_URL_DO_SUPABASE";
-    const SUPABASE_KEY = "SUA_CHAVE_ANON_DO_SUPABASE";
-    
+    // CONFIGURAÇÃO REAL DO SEU SUPABASE
+    const SUPABASE_URL = "https://chssifwpqrehztdyfssl.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_fRdHLOKe1zxnVbUgdqiB1g_i3LPqDSE"; 
+
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let produtoSelecionado = { nome: '', preco: 0 };
@@ -310,7 +310,7 @@
                 const card = document.createElement('div');
                 card.className = 'bg-[#f7f2e7] border border-[#2b1a11]/5 rounded-3xl p-5 flex flex-col justify-between text-center transition hover:-translate-y-1 duration-200';
                 card.innerHTML = `
-                    <img src="${p.imagem_url || 'https://via.placeholder.com/300x250/f2ebd9/2b1a11?text=Dindin+Gourmet'}" alt="${p.nome}" class="w-full h-44 object-cover rounded-2xl mb-4 shadow-inner">
+                    <img src="${p.imagem_url || 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&q=80&w=400'}" alt="${p.nome}" class="w-full h-44 object-cover rounded-2xl mb-4 shadow-inner">
                     <div>
                         <h4 class="font-serif font-bold text-lg mb-1 text-[#2b1a11]">${p.nome}</h4>
                         <p class="text-xs text-stone-500 leading-relaxed mb-4">${p.descricao || 'Feito artesanalmente com os melhores ingredientes.'}</p>
@@ -423,7 +423,7 @@
 
         if (whatsapp === ADMIN_WHATSAPP) {
             resultadoDiv.innerHTML = '<p style="color:#00cc66; font-weight:bold;">🔐 Redirecionando para o painel admin...</p>';
-            resultadoDiv.style.removeAttribute('class');
+            resultadoDiv.removeAttribute('class');
             resultadoDiv.className = "mt-6 p-4 rounded-xl text-left border-l-4 block bg-green-50 border-green-500";
             setTimeout(() => { window.location.href = 'admin.html'; }, 1200);
             return;
