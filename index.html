@@ -3,29 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dindin Gourmet</title>
+    <title>Dindin Supremo</title>
     <!-- Tailwind CSS para deixar o site bonito de forma fácil -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <!-- Script do Supabase para conectar com o banco de dados -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="bg-amber-50 text-neutral-800 font-sans min-h-screen">
+<body class="bg-amber-50 text-neutral-800 font-sans min-h-screen flex flex-col justify-between">
 
-    <!-- Cabeçalho / Topo do Site -->
-    <header class="bg-amber-400 text-amber-950 text-center py-6 shadow-md">
-        <h1 class="text-3xl font-black tracking-wider uppercase">Dindin Supremo</h1>
-        <p class="text-sm font-medium mt-1">O dindin mais cremoso e gelado da região!</p>
-    </header>
+    <div>
+        <!-- Cabeçalho / Topo do Site -->
+        <header class="bg-amber-400 text-amber-950 text-center py-6 shadow-md">
+            <h1 class="text-3xl font-black tracking-wider uppercase">Dindin Supremo</h1>
+            <p class="text-sm font-medium mt-1">O dindin mais cremoso e gelado da região!</p>
+        </header>
 
-    <!-- Seção Principal -->
-    <main class="max-w-md mx-auto px-4 py-8">
-        <h2 class="text-xl font-bold border-b-2 border-amber-400 pb-2 mb-6">🍦 Nosso Cardápio</h2>
-        
-        <!-- Onde os dindins vão aparecer automaticamente -->
-        <div id="lista-dindins" class="grid grid-cols-1 gap-6">
-            <p class="text-center text-gray-500 animate-pulse">Carregando dindins gostosos...</p>
-        </div>
-    </main>
+        <!-- Seção Principal -->
+        <main class="max-w-md mx-auto px-4 py-8">
+            <h2 class="text-xl font-bold border-b-2 border-amber-400 pb-2 mb-6">🍦 Nosso Cardápio</h2>
+            
+            <!-- Onde os dindins vão aparecer automaticamente -->
+            <div id="lista-dindins" class="grid grid-cols-1 gap-6">
+                <p class="text-center text-gray-500 animate-pulse">Carregando dindins gostosos...</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Rodapé com a Marca d'água da sua empresa -->
+    <footer class="bg-neutral-900 text-neutral-400 text-center py-6 mt-12 text-xs border-t border-neutral-800">
+        <p>&copy; 2026 Dindin Supremo. Todos os direitos reservados.</p>
+        <p class="mt-2 text-neutral-500">
+            Site desenvolvido por 
+            <span class="text-amber-400 font-bold tracking-wide">VR Web Solutions</span>
+        </p>
+    </footer>
 
     <!-- Script de Conexão e Lógica -->
     <script>
