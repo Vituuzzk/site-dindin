@@ -3,146 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Dindin Supremo | Cardápio Virtual</title>
-    <!-- Script do Supabase para conectar com o seu banco de dados -->
+    <title>Dindin Gourmet | Feito com Amor</title>
+    <!-- Tailwind CSS v4 para estilização premium -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Script do Supabase para conexão com o banco de dados -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { background-color: #0f0f0f; color: #ffffff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; text-align: center; }
-        header { width: 100%; padding: 15px 0 10px 0; background: #121212; position: relative; }
-        .logo-dindin { font-size: 50px; margin-bottom: 0; display: block; line-height: 1; }
-        h1 { color: #ffcc00; text-transform: uppercase; letter-spacing: 2px; margin: 5px 0 0 0; font-size: 1.8em; font-weight: 900; }
-        .subheader { color: #ffffff; font-size: 0.9em; margin-top: 5px; opacity: 0.9; }
-        hr { border: 0; border-top: 2px solid #ffcc00; width: 100%; margin-top: 15px; }
+        /* Cores customizadas baseadas na imagem 1001060332.png */
+        :root {
+            --cor-fundo: #fcf9f2;      /* Creme claro de fundo */
+            --cor-card: #f7f2e7;       /* Bege dos cards */
+            --cor-texto-escuro: #2b1a11; /* Marrom escuro café */
+            --cor-detalhe: #d9a05b;    /* Ouro/Dourado queimado */
+        }
+        body { background-color: var(--cor-fundo); color: var(--cor-texto-escuro); font-family: 'Segoe UI', Georgia, serif; }
         
-        .header-buttons {
-            display: flex; gap: 10px;
-            justify-content: center;
-            margin-top: 15px;
-        }
-        .btn-header {
-            background: transparent; border: 2px solid #ffcc00; color: #ffcc00;
-            padding: 10px 16px; border-radius: 30px; font-weight: bold;
-            cursor: pointer; transition: 0.3s; font-size: 0.9em;
-        }
-        .btn-header:hover { background: #ffcc00; color: #000; }
-
-        .container { max-width: 1100px; width: 90%; margin: 20px auto; }
-        #lista-produtos { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-        .card { background: #161616; border: 2px solid #222; border-radius: 16px; padding: 20px 15px; text-align: center; cursor: pointer; transition: all 0.2s; flex-direction: column; display: flex; justify-content: space-between; }
-        .card:hover { transform: translateY(-3px); border-color: #444; }
-        .card.selecionado { border: 3px solid #00cc66; box-shadow: 0 0 15px rgba(0, 204, 102, 0.2); transform: scale(1.01); background: #1a1a1a; }
-        .card img { width: 100%; height: 180px; object-fit: cover; border-radius: 10px; margin-bottom: 15px; }
-        .card h3 { color: #ffcc00; font-size: 1.2em; margin-bottom: 5px; margin-top: 5px; }
-        .description { color: #bbbbbb; font-size: 0.9em; margin-bottom: 15px; flex-grow: 1; }
-        .price { display: block; font-size: 1.8em; color: #ffffff; font-weight: bold; margin-bottom: 15px; }
-        .btn-comprar { background: #ffcc00; color: #000; border: none; padding: 12px; border-radius: 10px; font-weight: 900; width: 100%; cursor: pointer; text-transform: uppercase; font-size: 1em; transition: 0.2s; }
-        .btn-comprar:hover { background: #ffd633; transform: scale(1.02); }
-        .loading-msg { grid-column: 1 / -1; color: #ffcc00; font-size: 1.2em; padding: 30px; }
-
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); display: none; justify-content: center;
-            align-items: center; z-index: 1000; backdrop-filter: blur(3px);
+            background: rgba(43, 26, 17, 0.6); display: none; justify-content: center;
+            align-items: center; z-index: 1000; backdrop-filter: blur(4px);
         }
         .modal-card {
-            background: #1a1a1a; border: 2px solid #ffcc00; border-radius: 20px;
-            padding: 25px; max-width: 450px; width: 90%; text-align: center;
-            box-shadow: 0 0 30px rgba(255,204,0,0.3);
-            max-height: 85vh; overflow-y: auto;
+            background: #ffffff; border: 1px solid var(--cor-detalhe); border-radius: 24px;
+            padding: 30px; max-width: 450px; width: 90%; text-align: center;
+            box-shadow: 0 10px 30px rgba(43,26,17,0.15);
         }
-        .modal-card h3 { color: #ffcc00; margin: 0 0 15px 0; font-size: 1.6em; }
-        .modal-card p { color: #ccc; margin-bottom: 20px; font-size: 1em; }
         .modal-card input {
-            background: #111; border: 2px solid #ffcc00; color: #fff; padding: 12px;
-            border-radius: 10px; width: 100%; font-size: 1em; margin-bottom: 15px;
-            text-align: center; outline: none; box-sizing: border-box;
+            border: 1px solid #d1c7bd; color: var(--cor-texto-escuro); padding: 14px;
+            border-radius: 12px; width: 100%; font-size: 1em; margin-bottom: 15px;
+            text-align: center; outline: none; box-sizing: border-box; background-color: #fdfcf7;
         }
-        .modal-btn { 
-            padding: 12px; width: 100%; border: none; border-radius: 10px; 
-            font-weight: bold; cursor: pointer; margin-bottom: 8px; font-size: 1em;
-            transition: 0.2s;
-        }
-        .btn-confirm { background: #ffcc00; color: #000; }
-        .btn-confirm:hover { background: #ffe066; }
-        .btn-skip { background: transparent; color: #aaa; border: 1px solid #555; }
-        .btn-skip:hover { background: #222; color: #fff; }
-
-        .resultado-consulta {
-            margin-top: 20px; padding: 15px; background: #111; border-radius: 10px;
-            border-left: 5px solid #ffcc00; text-align: left;
-        }
-        .cupom-gerado {
-            font-size: 1.5em; font-family: monospace; background: #000; padding: 10px;
-            border-radius: 5px; color: #00ff00; margin: 10px 0; text-align: center;
-        }
-        .aviso-pequeno { font-size: 0.8em; color: #888; margin-top: 10px; }
-
+        .modal-card input:focus { border-color: var(--cor-detalhe); }
+        
+        /* Marca d'água flutuante discreta */
         .watermark {
-            position: fixed; bottom: 10px; right: 20px;
-            color: #555; font-size: 0.8em; opacity: 0.6;
-            z-index: 999; pointer-events: none;
-            font-weight: bold;
-        }
-
-        @media (min-width: 700px) {
-            .header-buttons {
-                position: absolute; top: 20px; right: 20px;
-                margin-top: 0;
-            }
-        }
-        @media (max-width: 699px) {
-            .logo-dindin { font-size: 40px; }
-            h1 { font-size: 1.5em; }
-            .btn-header { padding: 8px 12px; font-size: 0.85em; }
+            position: fixed; bottom: 15px; right: 20px;
+            color: var(--cor-texto-escuro); font-size: 0.75em; opacity: 0.3;
+            z-index: 999; pointer-events: none; font-weight: 600; letter-spacing: 0.5px;
         }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col justify-between">
 
 <div class="watermark">by VR Web Solutions</div>
 
 <!-- MODAL DE IDENTIFICAÇÃO (COMPRA) -->
 <div class="modal-overlay" id="modalIdentificacao">
     <div class="modal-card">
-        <h3>🍦 Identificação</h3>
-        <p>Para participar da nossa lista de fidelidade, informe seu nome e WhatsApp.</p>
-        <input type="text" id="nomeCliente" placeholder="Seu nome" autocomplete="off">
+        <h3 class="text-2xl font-bold mb-2" style="color: var(--cor-texto-escuro)">🤎 Programa Fidelidade</h3>
+        <p class="text-sm text-amber-950/70 mb-6">Informe seu nome e WhatsApp para acumular carimbos e ganhar dindins grátis!</p>
+        <input type="text" id="nomeCliente" placeholder="Seu nome completo" autocomplete="off">
         <input type="tel" id="whatsappIdent" placeholder="WhatsApp (com DDD)" maxlength="15" inputmode="numeric">
-        <button class="modal-btn btn-confirm" id="confirmarIdentificacao">CONTINUAR</button>
-        <button class="modal-btn btn-skip" id="pularIdentificacao">COMPRAR SEM FIDELIDADE</button>
-        <p class="aviso-pequeno">Seus dados são usados apenas para o acúmulo de pontos.</p>
+        <button class="w-full py-3 font-bold rounded-xl text-white transition mb-3 uppercase tracking-wider text-sm" 
+                style="background-color: var(--cor-texto-escuro);" id="confirmarIdentificacao">
+            Continuar para o Pedido
+        </button>
+        <button class="w-full py-3 font-medium rounded-xl text-stone-500 hover:bg-stone-100 transition text-sm" id="pularIdentificacao">
+            Comprar sem fidelidade
+        </button>
     </div>
 </div>
 
 <!-- MODAL CONSULTA FIDELIDADE -->
 <div class="modal-overlay" id="modalConsultaFidelidade">
     <div class="modal-card">
-        <h3>🔍 Consultar Cartão Fidelidade</h3>
-        <p>Digite seu WhatsApp (apenas números com DDD).</p>
+        <h3 class="text-2xl font-bold mb-2" style="color: var(--cor-texto-escuro)">🔍 Seu Cartão Fidelidade</h3>
+        <p class="text-sm text-amber-950/70 mb-6">Insira seu WhatsApp cadastrado para ver seus pontos.</p>
         <input type="tel" id="whatsappConsulta" placeholder="Ex: 88999998888" maxlength="11" inputmode="numeric">
-        <button class="modal-btn btn-confirm" id="buscarFidelidade">CONSULTAR</button>
-        <button class="modal-btn btn-skip" id="fecharConsultaFidelidade">FECHAR</button>
-        <div id="resultadoConsulta" class="resultado-consulta" style="display: none;"></div>
+        <button class="w-full py-3 font-bold rounded-xl text-white transition mb-3 uppercase tracking-wider text-sm" 
+                style="background-color: var(--cor-detalhe);" id="buscarFidelidade">
+            Consultar Pontos
+        </button>
+        <button class="w-full py-2 font-medium text-stone-400 text-sm" id="fecharConsultaFidelidade">Fechar</button>
+        <div id="resultadoConsulta" class="mt-6 p-4 rounded-xl text-left border-l-4 hidden" style="background-color: var(--cor-card); border-color: var(--cor-detalhe);"></div>
     </div>
 </div>
 
-<header>
-    <span class="logo-dindin">🍦</span>
-    <h1>DINDIN SUPREMO</h1>
-    <p class="subheader">O dindin mais cremoso, artesanal e gelado da região.</p>
-    <div class="header-buttons">
-        <button class="btn-header" id="abrirConsultaFidelidade">🎁 Fidelidade</button>
+<!-- TOP BAR INFORMATIVO -->
+<div class="bg-[#2b1a11] text-[#fcf9f2] text-xs py-2 px-4 flex flex-wrap justify-between items-center gap-2 md:px-12 border-b border-white/5">
+    <div class="flex items-center gap-1">🛵 Entrega rápida na região</div>
+    <div class="flex items-center gap-1">✨ Feito com ingredientes selecionados</div>
+    <div class="font-semibold text-[#d9a05b]">(88) 99999-9999</div>
+</div>
+
+<!-- HEADER / NAV -->
+<header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 px-4 py-4 md:px-12 flex justify-between items-center border-b border-[#2b1a11]/5 shadow-xs">
+    <div class="flex flex-col items-start leading-none">
+        <span class="text-2xl font-serif font-black tracking-tight" style="color: var(--cor-texto-escuro)">Dindin</span>
+        <span class="text-xs uppercase tracking-[0.3em] font-bold mt-0.5" style="color: var(--cor-detalhe)">• Gourmet •</span>
     </div>
-    <hr>
+    <nav class="hidden md:flex gap-8 text-sm font-medium tracking-wide" style="color: var(--cor-texto-escuro)">
+        <a href="#" class="hover:text-[--cor-detalhe] transition">Início</a>
+        <a href="#cardapio" class="hover:text-[--cor-detalhe] transition">Sabores</a>
+        <a href="#beneficios" class="hover:text-[--cor-detalhe] transition">Diferenciais</a>
+    </nav>
+    <button id="abrirConsultaFidelidade" class="px-5 py-2 rounded-full font-bold text-xs tracking-wider uppercase border-2 transition cursor-pointer"
+            style="border-color: var(--cor-texto-escuro); color: var(--cor-texto-escuro); background: transparent;">
+        🎁 Ver Fidelidade
+    </button>
 </header>
 
-<div class="container">
-    <div id="lista-produtos"><p class="loading-msg">🍦 Carregando cardápio cremoso...</p></div>
-</div>
+<!-- HERO SECTION (BANNER PRINCIPAL) -->
+<section class="max-w-6xl mx-auto px-6 py-12 md:py-20 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+    <div class="text-left">
+        <span class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--cor-detalhe)">Feito artesanalmente</span>
+        <h2 class="text-4xl md:text-6xl font-serif font-bold mt-2 mb-6 leading-[1.1]" style="color: var(--cor-texto-escuro)">
+            Dindin gourmet <br><span class="italic font-normal font-sans" style="color: var(--cor-detalhe)">feito com amor ♡</span>
+        </h2>
+        <p class="text-stone-600 max-w-md leading-relaxed mb-8 text-base">
+            Cremoso, saboroso e produzido com insumos de altíssima qualidade para transformar os seus momentos em experiências inesquecíveis e incrivelmente refrescantes.
+        </p>
+        <a href="#cardapio" class="inline-flex items-center gap-3 text-white font-bold py-4 px-8 rounded-full shadow-lg text-sm uppercase tracking-wider transition hover:scale-105" 
+           style="background-color: var(--cor-detalhe)">
+            Ver sabores disponíveis
+        </a>
+    </div>
+    <div class="relative flex justify-center">
+        <!-- Círculo decorativo de textura de fundo igual ao design -->
+        <div class="absolute -top-4 -right-4 bg-white border border-[#d9a05b]/30 rounded-full px-4 py-4 text-center w-24 h-24 flex flex-col justify-center items-center shadow-xs">
+            <span class="text-[9px] uppercase font-bold tracking-wider text-stone-400">Textura</span>
+            <span class="text-xs font-bold leading-tight" style="color: var(--cor-texto-escuro)">Super Cremosa</span>
+        </div>
+        <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&q=80&w=600" 
+             alt="Dindins Gourmet Cremosos" 
+             class="w-full max-w-md h-[380px] object-cover rounded-3xl shadow-xl border-4 border-white">
+    </div>
+</section>
+
+<!-- BENEFÍCIOS (GRID DE ÍCONES) -->
+<section id="beneficios" class="bg-white border-y border-[#2b1a11]/5 py-10 px-6">
+    <div class="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-left text-xs">
+        <div class="flex gap-3 items-start">
+            <span class="text-2xl">❄️</span>
+            <div>
+                <h4 class="font-bold mb-1 uppercase tracking-wide">Entrega Refrigerada</h4>
+                <p class="text-stone-500">Seu dindin chega congelado e pronto para consumo.</p>
+            </div>
+        </div>
+        <div class="flex gap-3 items-start">
+            <span class="text-2xl">📦</span>
+            <div>
+                <h4 class="font-bold mb-1 uppercase tracking-wide">Embalagem Segura</h4>
+                <p class="text-stone-500">Cuidadosamente higienizados e selados para proteção.</p>
+            </div>
+        </div>
+        <div class="flex gap-3 items-start">
+            <span class="text-2xl">🍓</span>
+            <div>
+                <h4 class="font-bold mb-1 uppercase tracking-wide">100% Artesanal</h4>
+                <p class="text-stone-500">Frutas frescas e as melhores marcas de chocolate.</p>
+            </div>
+        </div>
+        <div class="flex gap-3 items-start">
+            <span class="text-2xl">💳</span>
+            <div>
+                <h4 class="font-bold mb-1 uppercase tracking-wide">Pagamento Fácil</h4>
+                <p class="text-stone-500">Aceitamos Pix e cartões no ato da entrega.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CARDÁPIO VIRTUAL -->
+<section id="cardapio" class="max-w-6xl mx-auto px-6 py-16 text-center">
+    <span class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--cor-detalhe)">Nossos Sabores</span>
+    <h3 class="text-3xl font-serif font-bold mt-1 mb-12" style="color: var(--cor-texto-escuro)">Escolha o seu preferido</h3>
+    
+    <div id="lista-produtos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <p class="col-span-full text-center py-12 text-stone-400 animate-pulse font-medium">Carregando nosso cardápio de dindins...</p>
+    </div>
+</section>
+
+<!-- SEÇÃO EXPERIÊNCIA E DEPOIMENTOS -->
+<section class="max-w-5xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-center border-t border-[#2b1a11]/5">
+    <div class="flex gap-4 items-center bg-white p-6 rounded-3xl border border-stone-100 shadow-xs">
+        <img src="https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&q=80&w=250" alt="Produção" class="w-28 h-28 object-cover rounded-2xl">
+        <div class="text-left">
+            <h4 class="font-serif font-bold text-lg mb-1">Mais que um dindin, uma experiência. ✨</h4>
+            <p class="text-xs text-stone-500 leading-relaxed">Cada receita é feita com amor, dedicação e higiene rigorosa para garantir a melhor cremosidade que você já experimentou.</p>
+        </div>
+    </div>
+    <div class="bg-white p-6 rounded-3xl border border-stone-100 text-left shadow-xs flex flex-col justify-between h-full">
+        <p class="text-sm italic text-stone-600 leading-relaxed">"O melhor dindin gourmet que já provei na minha vida! O de Ninho com Nutella é super cremoso e não tem aqueles cristais de gelo. Chegou perfeito!"</p>
+        <div class="mt-4 flex items-center justify-between">
+            <span class="text-xs font-bold text-stone-400">⭐⭐⭐⭐⭐</span>
+            <span class="text-xs font-bold" style="color: var(--cor-texto-escuro)">Juliana M.</span>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER COMPLETO -->
+<footer class="bg-[#1e120c] text-[#e3dac9] text-xs mt-16 border-t border-white/5">
+    <div class="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+        <div>
+            <h5 class="text-white font-bold uppercase tracking-wider mb-3 text-sm">Dindin Supremo</h5>
+            <p class="text-stone-400 leading-relaxed">Leve sabor, refrescância e cremosidade para o seu dia a dia ou para os seus eventos com o melhor dindin gourmet da cidade.</p>
+        </div>
+        <div>
+            <h5 class="text-white font-bold uppercase tracking-wider mb-3 text-sm">Fale Conosco</h5>
+            <p class="text-stone-400 leading-relaxed mb-2">📍 Atendimento e entregas na região.</p>
+            <p class="text-[#d9a05b] font-bold text-sm">(88) 99999-9999</p>
+        </div>
+        <div>
+            <h5 class="text-white font-bold uppercase tracking-wider mb-3 text-sm">Garantias</h5>
+            <p class="text-stone-400 leading-relaxed">🔒 Seus dados estão 100% seguros através do nosso ecossistema de pedidos direto para o WhatsApp.</p>
+        </div>
+    </div>
+    <div class="border-t border-white/5 py-6 text-center text-stone-500 flex flex-col sm:flex-row justify-between items-center max-w-6xl mx-auto px-6 gap-2">
+        <p>&copy; 2026 Dindin Supremo Gourmet. Todos os direitos reservados.</p>
+        <p>Site incrivelmente desenvolvido por <span class="text-[#d9a05b] font-bold">VR Web Solutions</span></p>
+    </div>
+</footer>
 
 <script type="module">
-    // ⚙️ CONFIGURAÇÃO: NÚMERO DO WHATSAPP DE VENDAS
-    const ADMIN_WHATSAPP = "5588988057698"; // Insira o número oficial aqui
+    // ⚙️ CONFIGURAÇÃO DO SEU WHATSAPP DE VENDAS (Ex: 55 + DDD + Número)
+    const ADMIN_WHATSAPP = "5588988057698"; 
 
     // CONFIGURAÇÃO DO SEU SUPABASE
     const SUPABASE_URL = "SUA_URL_DO_SUPABASE";
@@ -151,7 +226,7 @@
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let produtoSelecionado = { nome: '', preco: 0 };
-    let metaFidelidade = 5; // A cada 5 compras, ganha prêmio/desconto
+    let metaFidelidade = 5;
 
     function formatarWhatsApp(numero) {
         const apenasNumeros = numero.replace(/\D/g, '');
@@ -167,9 +242,7 @@
     async function criarVendaPendente(produto, preco, clienteNome = "", clienteWhatsapp = "") {
         const precoNum = parseFloat(preco.toString().replace('R$', '').replace(/\s/g, '').replace(',', '.'));
         const clienteId = clienteWhatsapp || "Cliente Direto";
-        
         try {
-            // Insere a venda no fluxo do Supabase como pendente
             await supabase.from('vendas').insert([
                 {
                     cliente_id: clienteId,
@@ -179,12 +252,12 @@
                     status: "pendente"
                 }
             ]);
-        } catch (e) { console.error("Erro ao registrar intenção de venda:", e); }
+        } catch (e) { console.error("Erro ao registrar venda pendente:", e); }
     }
 
     function abrirWhatsApp(produto, preco, clienteNome = "", clienteWhatsapp = "") {
         let identificacao = (clienteNome && clienteWhatsapp) ? `${clienteNome} (${clienteWhatsapp})` : "Cliente Direto";
-        const resumo = `Olá! Vim pelo site e quero pedir um dindin:\n\n🍦 Sabor: ${produto}\n💰 Valor: R$ ${preco}\n👤 Cliente: ${identificacao}\n\nPode separar para mim?`;
+        const resumo = `Olá! Gostaria de pedir esse sabor maravilhoso que vi no site:\n\n🍦 Sabor: ${produto}\n💰 Valor: R$ ${preco}\n👤 Cliente: ${identificacao}\n\nPoderia verificar o tempo de entrega?`;
         window.location.href = `https://wa.me/${ADMIN_WHATSAPP}?text=${encodeURIComponent(resumo)}`;
     }
 
@@ -205,19 +278,23 @@
 
             container.innerHTML = '';
             if (error || !produtos || produtos.length === 0) {
-                container.innerHTML = '<p class="loading-msg">Nenhum dindin disponível no momento. 😢</p>';
+                container.innerHTML = '<p class="col-span-full text-center text-stone-400 py-6">Nenhum dindin disponível no momento. Volte mais tarde! 🤎</p>';
                 return;
             }
 
             produtos.forEach(p => {
                 const card = document.createElement('div');
-                card.className = 'card';
+                card.className = 'bg-[#f7f2e7] border border-[#2b1a11]/5 rounded-3xl p-5 flex flex-col justify-between text-center transition hover:-translate-y-1 duration-200';
                 card.innerHTML = `
-                    <img src="${p.imagem_url || 'https://via.placeholder.com/300x250/222/ffcc00?text=Dindin'}" alt="${p.nome}">
-                    <h3>${p.nome}</h3>
-                    <p class="description">${p.descricao || 'Feito com ingredientes selecionados.'}</p>
-                    <span class="price">R$ ${Number(p.preco).toFixed(2).replace('.', ',')}</span>
-                    <button class="btn-comprar">QUERO ESSE</button>
+                    <img src="${p.imagem_url || 'https://via.placeholder.com/300x250/f2ebd9/2b1a11?text=Dindin+Gourmet'}" alt="${p.nome}" class="w-full h-44 object-cover rounded-2xl mb-4 shadow-inner">
+                    <div>
+                        <h4 class="font-serif font-bold text-lg mb-1 text-[#2b1a11]">${p.nome}</h4>
+                        <p class="text-xs text-stone-500 leading-relaxed mb-4">${p.descricao || 'Feito artesanalmente com os melhores ingredientes.'}</p>
+                    </div>
+                    <div>
+                        <span class="block text-2xl font-bold mb-4 text-[#2b1a11]">R$ ${Number(p.preco).toFixed(2).replace('.', ',')}</span>
+                        <button class="w-full py-3 bg-[#2b1a11] hover:bg-[#3d2518] text-white font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer transition btn-comprar">Quero esse</button>
+                    </div>
                 `;
                 
                 const btn = card.querySelector('.btn-comprar');
@@ -225,47 +302,36 @@
                     e.stopPropagation();
                     window.mostrarModalIdentificacao(p.nome, Number(p.preco).toFixed(2).replace('.', ','));
                 });
-
-                card.addEventListener('click', (e) => {
-                    if (!e.target.classList.contains('btn-comprar')) {
-                        document.querySelectorAll('.card').forEach(c => c.classList.remove('selecionado'));
-                        card.classList.add('selecionado');
-                    }
-                });
                 container.appendChild(card);
             });
         } catch (e) {
-            container.innerHTML = '<p class="loading-msg">Erro ao conectar com o cardápio.</p>';
+            container.innerHTML = '<p class="col-span-full text-center text-red-700 py-6">Erro ao conectar com o catálogo de produtos.</p>';
         }
     }
 
     carregarProdutos();
 
-    // Verificação se quem digitou foi o admin querendo acessar o painel administrativo
     function verificarAdmin(whatsappFormatado) {
         if (whatsappFormatado === ADMIN_WHATSAPP) {
             const resultadoDiv = document.getElementById('resultadoConsulta');
-            resultadoDiv.innerHTML = '<p style="color:#00cc66;">🔐 Administrador detectado. Redirecionando para o painel...</p>';
+            resultadoDiv.innerHTML = '<p style="color:#00cc66; font-weight:bold;">🔐 Administrador detectado. Entrando no painel de gestão...</p>';
             resultadoDiv.style.display = 'block';
-            setTimeout(() => {
-                window.location.href = 'admin.html';
-            }, 1200);
+            setTimeout(() => { window.location.href = 'admin.html'; }, 1200);
             return true;
         }
         return false;
     }
 
-    // ========== EVENTOS DO MODAL DE COMPRA ==========
+    // EVENTOS MODAL COMPRA
     document.getElementById('confirmarIdentificacao').addEventListener('click', async () => {
         const nome = document.getElementById('nomeCliente').value.trim();
         let whatsapp = document.getElementById('whatsappIdent').value.trim();
-        if (nome === '') { alert('Informe seu nome para o pedido.'); return; }
-        if (whatsapp === '') { alert('Informe seu WhatsApp.'); return; }
+        if (nome === '') { alert('Por favor, insira o seu nome.'); return; }
+        if (whatsapp === '') { alert('Por favor, informe seu número de contato.'); return; }
         
         whatsapp = formatarWhatsApp(whatsapp);
-        if (whatsapp.length < 12) { alert('Use um número válido com DDD.'); return; }
+        if (whatsapp.length < 12) { alert('Digite o DDD junto do número corretamente.'); return; }
         
-        // Salva/Atualiza cadastro do cliente no Supabase
         await supabase.from('clientes').upsert({ whatsapp, nome }, { onConflict: 'whatsapp' });
         await criarVendaPendente(produtoSelecionado.nome, produtoSelecionado.preco, nome, whatsapp);
         
@@ -279,7 +345,7 @@
         abrirWhatsApp(produtoSelecionado.nome, produtoSelecionado.preco);
     });
 
-    // ========== EVENTOS DO MODAL FIDELIDADE ==========
+    // EVENTOS MODAL CONSULTA FIDELIDADE
     const modalConsulta = document.getElementById('modalConsultaFidelidade');
     const resultadoDiv = document.getElementById('resultadoConsulta');
     
@@ -288,24 +354,20 @@
         document.getElementById('whatsappConsulta').value = '';
         resultadoDiv.style.display = 'none';
     });
-    
     document.getElementById('fecharConsultaFidelidade').addEventListener('click', () => modalConsulta.style.display = 'none');
     
     document.getElementById('buscarFidelidade').addEventListener('click', async () => {
         let whatsapp = document.getElementById('whatsappConsulta').value.trim();
-        if (whatsapp === '') { alert('Digite o número.'); return; }
-        
+        if (whatsapp === '') { alert('Digite o seu número.'); return; }
         whatsapp = formatarWhatsApp(whatsapp);
-        if (whatsapp.length < 12) { alert('Número inválido.'); return; }
+        if (whatsapp.length < 12) { alert('Número incorreto.'); return; }
 
         if (verificarAdmin(whatsapp)) return;
 
         try {
-            // Busca o nome do cliente
             const { data: cliente } = await supabase.from('clientes').select('nome').eq('whatsapp', whatsapp).single();
-            const nomeCliente = cliente ? cliente.nome : "Cliente";
+            const nomeCliente = cliente ? cliente.nome : "Cliente Especial";
 
-            // Conta quantas vendas desse cliente estão confirmadas no sistema
             const { count: compras } = await supabase.from('vendas')
                 .select('*', { count: 'exact', head: true })
                 .eq('cliente_id', whatsapp)
@@ -315,18 +377,19 @@
             const faltam = Math.max(metaFidelidade - totalCompras, 0);
             const atingiu = totalCompras >= metaFidelidade;
             
-            let html = `<p><strong>👤 Nome:</strong> ${nomeCliente}</p><p><strong>📱 WhatsApp:</strong> ${whatsapp}</p><p><strong>🛒 Carimbos acumulados:</strong> ${totalCompras} / ${metaFidelidade}</p>`;
+            let html = `<p class="text-sm mb-1"><strong>👤 Nome:</strong> ${nomeCliente}</p><p class="text-sm mb-3"><strong>📱 WhatsApp:</strong> ${whatsapp}</p><p class="text-sm font-bold">🛒 Carimbos: ${totalCompras} de ${metaFidelidade}</p>`;
             
             if (atingiu) {
-                html += `<p style="color:#00ff00; font-weight:bold;">🎉 Parabéns! Você completou seu cartão fidelidade! Peça seu Dindin Grátis no próximo pedido!</p>`;
+                html += `<p class="mt-3 text-xs font-bold text-green-700">🎉 Excelente! Cartão preenchido. Avise no WhatsApp para resgatar seu Dindin Gourmet Grátis!</p>`;
             } else {
-                html += `<p>⏳ Faltam apenas ${faltam} compra(s) para você ganhar um prêmio!</p><div style="background:#333; height:12px; border-radius:6px; overflow:hidden; margin-top:10px;"><div style="width:${(totalCompras/metaFidelidade)*100}%; background:#00cc66; height:10px;"></div></div>`;
+                html += `<p class="mt-2 text-xs text-stone-600">Faltam ${faltam} compras confirmadas para o prêmio.</p><div class="w-full bg-stone-200 h-2.5 rounded-full mt-2 overflow-hidden"><div class="h-full bg-amber-700" style="width:${(totalCompras/metaFidelidade)*100}%"></div></div>`;
             }
             
             resultadoDiv.innerHTML = html;
-            resultadoDiv.style.display = 'block';
+            resultadoDiv.style.removeAttribute('class');
+            resultadoDiv.className = "mt-6 p-4 rounded-xl text-left border-l-4 block bg-[#f7f2e7] border-[#d9a05b]";
         } catch (e) {
-            resultadoDiv.innerHTML = '<p style="color:red;">Erro ao processar consulta de pontos.</p>';
+            resultadoDiv.innerHTML = '<p class="text-xs text-red-700">Erro na verificação de pontos.</p>';
             resultadoDiv.style.display = 'block';
         }
     });
