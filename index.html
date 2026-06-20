@@ -31,25 +31,8 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between">
 
-<!-- MARCA D'ÁGUA COM ACESSO SECRETO -->
-<a href="#" class="watermark" id="atalho-admin">by VR Web Solutions</a>
-
-<!-- 🔐 MODAL DE ACESSO AO ADMIN (SUBSTITUI O PROMPT DO CELULAR) -->
-<div id="modal-senha-admin" class="hidden fixed inset-0 bg-black/60 backdrop-blur-xs z-[1000] flex items-center justify-center p-4 animate-fadeIn">
-    <div class="bg-[#fcf9f2] border border-[#2b1a11]/10 w-full max-w-xs rounded-3xl p-6 text-center shadow-2xl">
-        <span class="text-3xl">🔑</span>
-        <h4 class="font-serif font-bold text-base mt-2 mb-1 text-[#2b1a11]">Área Restrita</h4>
-        <p class="text-[11px] text-stone-500 mb-4">Insira o código de gerenciamento</p>
-        
-        <input type="password" id="input-senha-admin" placeholder="••••••••" 
-               class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-center text-sm focus:border-[#d9a05b] mb-3">
-        
-        <div class="flex gap-2">
-            <button id="btn-confirmar-admin" class="flex-1 py-2.5 bg-[#2b1a11] text-white text-xs font-bold uppercase rounded-xl cursor-pointer">Entrar</button>
-            <button id="btn-fechar-modal" class="py-2.5 px-4 bg-stone-200 text-stone-600 text-xs font-bold uppercase rounded-xl cursor-pointer">Sair</button>
-        </div>
-    </div>
-</div>
+<!-- MARCA D'ÁGUA DIRECIONANDO DIRETO PRO ADMIN (SEM BLOQUEIOS) -->
+<a href="admin.html" class="watermark">by VR Web Solutions</a>
 
 <!-- TOP BAR INFORMATIVO -->
 <div class="bg-[#2b1a11] text-[#fcf9f2] text-xs py-2 px-4 flex flex-wrap justify-between items-center gap-2 md:px-12 border-b border-white/5">
@@ -102,31 +85,19 @@
     <div class="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-left text-xs">
         <div class="flex gap-3 items-start">
             <span class="text-2xl">❄️</span>
-            <div>
-                <h4 class="font-bold mb-1 uppercase tracking-wide">Entrega em Sobral</h4>
-                <p class="text-stone-500">Seu dindin chega congelado e prontinho na sua porta.</p>
-            </div>
+            <div><h4 class="font-bold mb-1 uppercase tracking-wide">Entrega em Sobral</h4><p class="text-stone-500">Seu dindin chega congelado e prontinho.</p></div>
         </div>
         <div class="flex gap-3 items-start">
             <span class="text-2xl">📦</span>
-            <div>
-                <h4 class="font-bold mb-1 uppercase tracking-wide">Embalagem Segura</h4>
-                <p class="text-stone-500">Cuidadosamente higienizados e selados para proteção.</p>
-            </div>
+            <div><h4 class="font-bold mb-1 uppercase tracking-wide">Embalagem Segura</h4><p class="text-stone-500">Cuidadosamente higienizados e selados.</p></div>
         </div>
         <div class="flex gap-3 items-start">
             <span class="text-2xl">🍓</span>
-            <div>
-                <h4 class="font-bold mb-1 uppercase tracking-wide">100% Artesanal</h4>
-                <p class="text-stone-500">Frutas frescas e as melhores marcas de chocolate.</p>
-            </div>
+            <div><h4 class="font-bold mb-1 uppercase tracking-wide">100% Artesanal</h4><p class="text-stone-500">Frutas frescas e as melhores marcas.</p></div>
         </div>
         <div class="flex gap-3 items-start">
             <span class="text-2xl">💳</span>
-            <div>
-                <h4 class="font-bold mb-1 uppercase tracking-wide">Pagamento Fácil</h4>
-                <p class="text-stone-500">Aceitamos Pix e cartões no ato da entrega.</p>
-            </div>
+            <div><h4 class="font-bold mb-1 uppercase tracking-wide">Pagamento Fácil</h4><p class="text-stone-500">Aceitamos Pix e cartões na entrega.</p></div>
         </div>
     </div>
 </section>
@@ -176,7 +147,6 @@
     </div>
 </section>
 
-<!-- FOOTER COMPLETO -->
 <footer class="bg-[#1e120c] text-[#e3dac9] text-xs mt-16 border-t border-white/5">
     <div class="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
         <div><h5 class="text-white font-bold uppercase tracking-wider mb-3 text-sm">Dindin Supremo</h5><p class="text-stone-400">Leve sabor e cremosidade para o seu dia a dia.</p></div>
@@ -196,46 +166,6 @@
 
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     let notaSelecionada = 5;
-
-    // 🛠️ LÓGICA DO MODAL CUSTOMIZADO (LIVRE DE BLOQUEIOS DO CELULAR)
-    const atalhoAdmin = document.getElementById('atalho-admin');
-    const modalSenha = document.getElementById('modal-senha-admin');
-    const inputSenha = document.getElementById('input-senha-admin');
-    const btnConfirmar = document.getElementById('btn-confirmar-admin');
-    const btnFechar = document.getElementById('btn-fechar-modal');
-
-    // Abre o modal ao clicar na marca d'água
-    atalhoAdmin.addEventListener('click', (e) => {
-        e.preventDefault();
-        inputSenha.value = ''; // Limpa anterior
-        modalSenha.classList.remove('hidden');
-        inputSenha.focus();
-    });
-
-    // Fecha o modal
-    btnFechar.addEventListener('click', () => {
-        modalSenha.classList.add('hidden');
-    });
-
-    // Executa a validação
-    function validarAcessoAdmin() {
-        if (inputSenha.value.trim() === 'admin') {
-            modalSenha.classList.add('hidden');
-            window.location.href = 'admin.html';
-        } else {
-            alert('Código incorreto!');
-            inputSenha.value = '';
-        }
-    }
-
-    btnConfirmar.addEventListener('click', validarAcessoAdmin);
-    
-    // Deixar dar "Entrar" direto pelo botão do teclado do celular (Enter)
-    inputSenha.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            validarAcessoAdmin();
-        }
-    });
 
     // CARREGAR PRODUTOS DO BANCO
     async function carregarProdutos() {
@@ -270,7 +200,7 @@
         } catch (e) { container.innerHTML = '<p class="col-span-full text-center text-red-700 py-6">Erro ao carregar o catálogo.</p>'; }
     }
 
-    // AVALIAÇÕES (SISTEMA REAL)
+    // AVALIAÇÕES
     const botoesEstrelas = document.querySelectorAll('.star-btn');
     function atualizarEstrelasForm(nota) {
         notaSelecionada = nota;
@@ -329,7 +259,6 @@
         } catch (err) { alert('Erro ao enviar avaliação.'); }
     });
 
-    // INICIALIZAÇÃO
     carregarProdutos();
     carregarAvaliacoes();
 </script>
