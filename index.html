@@ -9,22 +9,20 @@
     <!-- Script do Supabase para conexão com o banco de dados -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* Cores customizadas baseadas na identidade visual gourmet */
         :root {
-            --cor-fundo: #fcf9f2;      /* Creme claro de fundo */
-            --cor-card: #f7f2e7;       /* Bege dos cards */
-            --cor-texto-escuro: #2b1a11; /* Marrom escuro café */
-            --cor-detalhe: #d9a05b;    /* Ouro/Dourado queimado */
+            --cor-fundo: #fcf9f2;      
+            --cor-card: #f7f2e7;       
+            --cor-texto-escuro: #2b1a11; 
+            --cor-detalhe: #d9a05b;    
         }
         body { background-color: var(--cor-fundo); color: var(--cor-texto-escuro); font-family: 'Segoe UI', Georgia, serif; }
         
-        /* Marca d'água flutuante discreta com correção para celular */
         .watermark {
             position: fixed; bottom: 15px; right: 20px;
             color: var(--cor-texto-escuro); font-size: 0.75em; opacity: 0.3;
             z-index: 999; cursor: pointer; font-weight: 600; letter-spacing: 0.5px;
             transition: opacity 0.2s;
-            user-select: none; /* Impede que o celular selecione/copie o texto no clique */
+            user-select: none;
             -webkit-user-select: none;
             text-decoration: none;
         }
@@ -33,8 +31,25 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between">
 
-<!-- MARCA D'ÁGUA COM ACESSO SECRETO (CORRIGIDA PARA LINK) -->
+<!-- MARCA D'ÁGUA COM ACESSO SECRETO -->
 <a href="#" class="watermark" id="atalho-admin">by VR Web Solutions</a>
+
+<!-- 🔐 MODAL DE ACESSO AO ADMIN (SUBSTITUI O PROMPT DO CELULAR) -->
+<div id="modal-senha-admin" class="hidden fixed inset-0 bg-black/60 backdrop-blur-xs z-[1000] flex items-center justify-center p-4 animate-fadeIn">
+    <div class="bg-[#fcf9f2] border border-[#2b1a11]/10 w-full max-w-xs rounded-3xl p-6 text-center shadow-2xl">
+        <span class="text-3xl">🔑</span>
+        <h4 class="font-serif font-bold text-base mt-2 mb-1 text-[#2b1a11]">Área Restrita</h4>
+        <p class="text-[11px] text-stone-500 mb-4">Insira o código de gerenciamento</p>
+        
+        <input type="password" id="input-senha-admin" placeholder="••••••••" 
+               class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-center text-sm focus:border-[#d9a05b] mb-3">
+        
+        <div class="flex gap-2">
+            <button id="btn-confirmar-admin" class="flex-1 py-2.5 bg-[#2b1a11] text-white text-xs font-bold uppercase rounded-xl cursor-pointer">Entrar</button>
+            <button id="btn-fechar-modal" class="py-2.5 px-4 bg-stone-200 text-stone-600 text-xs font-bold uppercase rounded-xl cursor-pointer">Sair</button>
+        </div>
+    </div>
+</div>
 
 <!-- TOP BAR INFORMATIVO -->
 <div class="bg-[#2b1a11] text-[#fcf9f2] text-xs py-2 px-4 flex flex-wrap justify-between items-center gap-2 md:px-12 border-b border-white/5">
@@ -55,10 +70,10 @@
         <a href="#beneficios" class="hover:text-[--cor-detalhe] transition">Diferenciais</a>
         <a href="#avaliacoes" class="hover:text-[--cor-detalhe] transition">Avaliações</a>
     </nav>
-    <div class="w-28 md:w-auto"></div> <!-- Espaçador para simetria do layout -->
+    <div class="w-28 md:w-auto"></div>
 </header>
 
-<!-- HERO SECTION (BANNER PRINCIPAL) -->
+<!-- HERO SECTION -->
 <section class="max-w-6xl mx-auto px-6 py-12 md:py-20 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
     <div class="text-left">
         <span class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--cor-detalhe)">Feito artesanalmente</span>
@@ -78,13 +93,11 @@
             <span class="text-[9px] uppercase font-bold tracking-wider text-stone-400">Textura</span>
             <span class="text-xs font-bold leading-tight" style="color: var(--cor-texto-escuro)">Super Cremosa</span>
         </div>
-        <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&q=80&w=600" 
-             alt="Dindins Gourmet Cremosos" 
-             class="w-full max-w-md h-[380px] object-cover rounded-3xl shadow-xl border-4 border-white">
+        <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&q=80&w=600" alt="Dindins Gourmet Cremosos" class="w-full max-w-md h-[380px] object-cover rounded-3xl shadow-xl border-4 border-white">
     </div>
 </section>
 
-<!-- BENEFÍCIOS (GRID DE ÍCONES) -->
+<!-- BENEFÍCIOS -->
 <section id="beneficios" class="bg-white border-y border-[#2b1a11]/5 py-10 px-6">
     <div class="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-left text-xs">
         <div class="flex gap-3 items-start">
@@ -122,7 +135,6 @@
 <section id="cardapio" class="max-w-6xl mx-auto px-6 py-16 text-center">
     <span class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--cor-detalhe)">Nossos Sabores</span>
     <h3 class="text-3xl font-serif font-bold mt-1 mb-12" style="color: var(--cor-texto-escuro)">Escolha o seu preferido</h3>
-    
     <div id="lista-produtos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         <p class="col-span-full text-center py-12 text-stone-400 animate-pulse font-medium">Carregando nosso cardápio de dindins...</p>
     </div>
@@ -134,24 +146,17 @@
         <span class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--cor-detalhe)">O que dizem sobre nós</span>
         <h3 class="text-3xl font-serif font-bold mt-1" style="color: var(--cor-texto-escuro)">Avaliações dos Clientes</h3>
     </div>
-
-    <!-- Grid Dinâmico do Supabase -->
     <div id="grid-avaliacoes" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
         <p class="col-span-full text-center text-stone-400 animate-pulse text-sm">Carregando avaliações dos clientes...</p>
     </div>
 
-    <!-- Formulário Elegante para Novo Depoimento -->
     <div class="max-w-xl mx-auto bg-[#f7f2e7] border border-[#2b1a11]/5 rounded-3xl p-6 md:p-8 text-left shadow-xs">
         <h4 class="font-serif font-bold text-lg mb-2 text-[#2b1a11]">Gostou do seu dindin? Deixe sua avaliação!</h4>
-        <p class="text-xs text-stone-500 mb-6">Sua opinião é muito importante para continuarmos melhorando nosso sabor.</p>
-        
         <form id="form-avaliacao" class="space-y-4">
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Seu Nome</label>
-                <input type="text" id="aval-nome" required placeholder="Ex: Maria Silva" 
-                       class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-[#fdfcf7] text-sm focus:border-[#d9a05b]">
+                <input type="text" id="aval-nome" required class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-[#fdfcf7] text-sm focus:border-[#d9a05b]">
             </div>
-            
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Sua Nota (Estrelas)</label>
                 <div class="flex gap-2 text-2xl" id="seletor-estrelas">
@@ -162,17 +167,11 @@
                     <button type="button" class="star-btn text-stone-300 hover:text-amber-500 transition cursor-pointer" data-value="5">★</button>
                 </div>
             </div>
-
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Seu Comentário</label>
-                <textarea id="aval-comentario" required rows="3" placeholder="Conte o que achou do sabor, da cremosidade..." 
-                          class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-[#fdfcf7] text-sm focus:border-[#d9a05b] resize-none"></textarea>
+                <textarea id="aval-comentario" required rows="3" class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-[#fdfcf7] text-sm focus:border-[#d9a05b] resize-none"></textarea>
             </div>
-
-            <button type="submit" class="w-full py-3 text-white font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer transition shadow-md"
-                    style="background-color: var(--cor-texto-escuro);">
-                Enviar Avaliação Real
-            </button>
+            <button type="submit" class="w-full py-3 text-white font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer transition shadow-md" style="background-color: var(--cor-texto-escuro);">Enviar Avaliação Real</button>
         </form>
     </div>
 </section>
@@ -180,19 +179,9 @@
 <!-- FOOTER COMPLETO -->
 <footer class="bg-[#1e120c] text-[#e3dac9] text-xs mt-16 border-t border-white/5">
     <div class="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
-        <div>
-            <h5 class="text-white font-bold uppercase tracking-wider mb-3 text-sm">Dindin Supremo</h5>
-            <p class="text-stone-400 leading-relaxed">Leve sabor, refrescância e cremosidade para o seu dia a dia ou para os seus eventos com o melhor dindin gourmet da cidade.</p>
-        </div>
-        <div>
-            <h5 class="text-white font-bold uppercase tracking-wider mb-3 text-sm">Fale Conosco</h5>
-            <p class="text-stone-400 leading-relaxed mb-2">📍 Atendimento e entregas somente em Sobral - CE.</p>
-            <p class="text-[#d9a05b] font-bold text-sm">(88) 99272-1857</p>
-        </div>
-        <div>
-            <h5 class="text-white font-bold uppercase tracking-wider mb-3 text-sm">Garantias</h5>
-            <p class="text-stone-400 leading-relaxed">🔒 Seus dados estão 100% seguros através do nosso ecossistema de pedidos direto para o WhatsApp.</p>
-        </div>
+        <div><h5 class="text-white font-bold uppercase tracking-wider mb-3 text-sm">Dindin Supremo</h5><p class="text-stone-400">Leve sabor e cremosidade para o seu dia a dia.</p></div>
+        <div><h5 class="text-white font-bold uppercase tracking-wider mb-3 text-sm">Fale Conosco</h5><p class="text-[#d9a05b] font-bold text-sm">(88) 99272-1857</p></div>
+        <div><h5 class="text-white font-bold uppercase tracking-wider mb-3 text-sm">Garantias</h5><p class="text-stone-400">Pedidos seguros diretos via WhatsApp.</p></div>
     </div>
     <div class="border-t border-white/5 py-6 text-center text-stone-500 flex flex-col sm:flex-row justify-between items-center max-w-6xl mx-auto px-6 gap-2">
         <p>&copy; 2026 Dindin Supremo Gourmet. Todos os direitos reservados.</p>
@@ -201,25 +190,50 @@
 </footer>
 
 <script type="module">
-    // ⚙️ CONFIGURAÇÃO DO WHATSAPP DE VENDAS
     const ADMIN_WHATSAPP = "5588992721857"; 
-
-    // CONFIGURAÇÃO REAL DO SEU SUPABASE
     const SUPABASE_URL = "https://chssifwpqrehztdyfssl.supabase.co";
     const SUPABASE_KEY = "sb_publishable_fRdHLOKe1zxnVbUgdqiB1g_i3LPqDSE"; 
 
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
     let notaSelecionada = 5;
 
-    // LÓGICA DO ATALHO SECRETO PARA O ADMIN (MELHORADO PARA MOBILE)
-    document.getElementById('atalho-admin').addEventListener('click', (e) => {
-        e.preventDefault(); // Evita rolar a página ou comportamento padrão do link
-        const senha = prompt('Digite o código de acesso:');
-        if (senha !== null && senha.trim() === 'admin') {
-            window.location.href = 'admin.html'; // Redireciona para o arquivo separado
-        } else if (senha !== null) {
+    // 🛠️ LÓGICA DO MODAL CUSTOMIZADO (LIVRE DE BLOQUEIOS DO CELULAR)
+    const atalhoAdmin = document.getElementById('atalho-admin');
+    const modalSenha = document.getElementById('modal-senha-admin');
+    const inputSenha = document.getElementById('input-senha-admin');
+    const btnConfirmar = document.getElementById('btn-confirmar-admin');
+    const btnFechar = document.getElementById('btn-fechar-modal');
+
+    // Abre o modal ao clicar na marca d'água
+    atalhoAdmin.addEventListener('click', (e) => {
+        e.preventDefault();
+        inputSenha.value = ''; // Limpa anterior
+        modalSenha.classList.remove('hidden');
+        inputSenha.focus();
+    });
+
+    // Fecha o modal
+    btnFechar.addEventListener('click', () => {
+        modalSenha.classList.add('hidden');
+    });
+
+    // Executa a validação
+    function validarAcessoAdmin() {
+        if (inputSenha.value.trim() === 'admin') {
+            modalSenha.classList.add('hidden');
+            window.location.href = 'admin.html';
+        } else {
             alert('Código incorreto!');
+            inputSenha.value = '';
+        }
+    }
+
+    btnConfirmar.addEventListener('click', validarAcessoAdmin);
+    
+    // Deixar dar "Entrar" direto pelo botão do teclado do celular (Enter)
+    inputSenha.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            validarAcessoAdmin();
         }
     });
 
