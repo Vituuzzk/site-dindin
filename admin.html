@@ -4,50 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Admin | Dindin Gourmet</title>
-    <!-- Tailwind CSS v4 para estilização premium -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Script do Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-[#fcf9f2] text-[#2b1a11] font-sans min-h-screen">
 
-    <!-- HEADER DO PAINEL -->
+    <!-- HEADER -->
     <header class="bg-[#2b1a11] text-[#fcf9f2] p-6 shadow-md flex justify-between items-center">
         <div>
             <h1 class="text-xl font-serif font-black tracking-tight">Painel de Controle Administrativo</h1>
             <p class="text-[10px] text-[#d9a05b] uppercase tracking-widest font-bold mt-1">Gerenciamento Geral do Cardápio</p>
         </div>
-        <div class="text-right text-xs">
-            <button onclick="window.location.href='index.html'" class="px-4 py-2 bg-[#d9a05b] hover:bg-[#b88243] text-white font-bold rounded-xl transition cursor-pointer">
-                ← Ver Cardápio Público
-            </button>
-        </div>
+        <button onclick="window.location.href='index.html'" class="px-4 py-2 bg-[#d9a05b] hover:bg-[#b88243] text-white font-bold rounded-xl transition cursor-pointer text-xs">
+            ← Ver Cardápio Público
+        </button>
     </header>
 
     <main class="max-w-6xl mx-auto p-6 space-y-8">
-        
-        <!-- SEÇÃO SUPERIOR: PRODUTOS E AVALIAÇÕES -->
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            <!-- COLUNA ESQUERDA: FORMULÁRIO (CADASTRAR / EDITAR) -->
+
+            <!-- FORMULÁRIO CADASTRO / EDIÇÃO -->
             <div class="lg:col-span-1 space-y-6">
                 <div class="bg-[#f7f2e7] border border-[#2b1a11]/10 rounded-3xl p-6 shadow-xs">
                     <h2 id="form-titulo" class="text-lg font-serif font-bold mb-2">Cadastrar Novo Dindin</h2>
                     <p class="text-xs text-stone-500 mb-6">Preencha as informações para atualizar seu cardápio em tempo real.</p>
-                    
+
                     <form id="form-produto" class="space-y-4">
                         <input type="hidden" id="prod-id">
-                        
+
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Nome do Sabor</label>
-                            <input type="text" id="prod-nome" required placeholder="Ex: Ninho com Nutella" 
+                            <input type="text" id="prod-nome" required placeholder="Ex: Ninho com Nutella"
                                    class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b]">
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Preço (R$)</label>
-                                <input type="number" step="0.01" id="prod-preco" required placeholder="5.00" 
+                                <input type="number" step="0.01" id="prod-preco" required placeholder="5.00"
                                        class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b]">
                             </div>
                             <div>
@@ -61,15 +55,15 @@
 
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Descrição / Ingredientes</label>
-                            <textarea id="prod-descricao" rows="3" placeholder="Ex: Base super cremosa de leite ninho com recheio legítimo de Nutella." 
+                            <textarea id="prod-descricao" rows="3" placeholder="Ex: Base super cremosa de leite ninho com recheio legítimo de Nutella."
                                       class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b] resize-none"></textarea>
                         </div>
 
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Link da Imagem (URL)</label>
-                            <input type="url" id="prod-imagem" placeholder="https://linkdafoto.com/imagem.jpg" 
+                            <input type="url" id="prod-imagem" placeholder="https://linkdafoto.com/imagem.jpg"
                                    class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b]">
-                            <p class="text-[10px] text-stone-500 mt-1">Dica: Você pode upar fotos em sites como o <a href="https://imgbb.com/" target="_blank" class="text-[#d9a05b] underline">ImgBB</a> e colar o link direto aqui.</p>
+                            <p class="text-[10px] text-stone-500 mt-1">Dica: Você pode upar fotos em <a href="https://imgbb.com/" target="_blank" class="text-[#d9a05b] underline">ImgBB</a> e colar o link aqui.</p>
                         </div>
 
                         <div class="flex gap-2 pt-2">
@@ -84,16 +78,15 @@
                 </div>
             </div>
 
-            <!-- COLUNA DIREITA: LISTAGEM DE PRODUTOS E COMENTÁRIOS -->
+            <!-- LISTAGEM E AVALIAÇÕES -->
             <div class="lg:col-span-2 space-y-8">
-                
-                <!-- LISTA DE PRODUTOS CADASTRADOS -->
+
+                <!-- LISTA DE PRODUTOS -->
                 <div class="bg-white border border-[#2b1a11]/5 rounded-3xl p-6 shadow-xs">
                     <h3 class="text-lg font-serif font-bold mb-4 flex justify-between items-center">
                         <span>🍦 Sabores no Cardápio</span>
                         <span id="total-produtos" class="text-xs bg-[#f7f2e7] text-[#2b1a11] px-3 py-1 rounded-full font-sans font-bold">0</span>
                     </h3>
-                    
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-sm border-collapse">
                             <thead>
@@ -106,21 +99,18 @@
                                 </tr>
                             </thead>
                             <tbody id="tabela-produtos" class="divide-y divide-stone-100">
-                                <tr>
-                                    <td colspan="5" class="py-6 text-center text-stone-400 animate-pulse">Buscando dindins...</td>
-                                </tr>
+                                <tr><td colspan="5" class="py-6 text-center text-stone-400 animate-pulse">Buscando dindins...</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- GERENCIADOR DE COMENTÁRIOS / AVALIAÇÕES -->
+                <!-- AVALIAÇÕES DOS CLIENTES -->
                 <div class="bg-white border border-[#2b1a11]/5 rounded-3xl p-6 shadow-xs">
                     <h3 class="text-lg font-serif font-bold mb-4 flex justify-between items-center">
                         <span>💬 Avaliações dos Clientes</span>
                         <span id="total-comentarios" class="text-xs bg-[#f7f2e7] text-[#2b1a11] px-3 py-1 rounded-full font-sans font-bold">0</span>
                     </h3>
-                    
                     <div class="space-y-4" id="lista-admin-avaliacoes">
                         <p class="text-center text-stone-400 py-4 animate-pulse text-sm">Carregando comentários...</p>
                     </div>
@@ -129,15 +119,14 @@
             </div>
         </div>
 
-        <!-- 💰 SEÇÃO DE BRINDE: FLUXO DE CAIXA -->
+        <!-- CONTROLE DE CAIXA -->
         <hr class="border-stone-200 my-8">
-        
+
         <div class="bg-[#f7f2e7] border border-[#2b1a11]/10 rounded-3xl p-6 shadow-xs">
             <h3 class="text-xl font-serif font-bold text-[#2b1a11] mb-2 flex items-center gap-2">💵 Controle de Caixa e Finanças</h3>
             <p class="text-xs text-stone-500 mb-6">Acompanhe as vendas, custos de produção e lucro acumulado.</p>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                <!-- Cards de Resumo -->
                 <div class="bg-white p-4 rounded-2xl border border-stone-200 text-left">
                     <span class="text-[10px] text-stone-400 font-bold uppercase tracking-wider">Total Entradas</span>
                     <h4 id="caixa-entradas" class="text-xl font-bold text-emerald-700 mt-1">R$ 0,00</h4>
@@ -153,23 +142,25 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-                <!-- Formulário de Movimentação -->
+                <!-- Form movimentação -->
                 <form id="form-caixa" class="bg-white p-4 rounded-2xl border border-stone-200 space-y-4 text-left">
                     <h4 class="text-xs font-bold uppercase tracking-wider text-stone-700">Nova Movimentação</h4>
                     <div>
                         <label class="block text-[11px] font-bold text-stone-600 mb-1">Descrição / Motivo</label>
-                        <input type="text" id="caixa-descricao" required placeholder="Ex: Venda de 5 dindins, Compra de Leite Condensado" class="w-full p-2.5 border border-[#d1c7bd] rounded-xl bg-stone-50 text-xs outline-none focus:border-[#d9a05b]">
+                        <input type="text" id="caixa-descricao" required placeholder="Ex: Venda de 5 dindins, Compra de Leite Condensado"
+                               class="w-full p-2.5 border border-[#d1c7bd] rounded-xl bg-stone-50 text-xs outline-none focus:border-[#d9a05b]">
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label class="block text-[11px] font-bold text-stone-600 mb-1">Valor (R$)</label>
-                            <input type="number" step="0.01" id="caixa-valor" required placeholder="0.00" class="w-full p-2.5 border border-[#d1c7bd] rounded-xl bg-stone-50 text-xs outline-none focus:border-[#d9a05b]">
+                            <input type="number" step="0.01" id="caixa-valor" required placeholder="0.00"
+                                   class="w-full p-2.5 border border-[#d1c7bd] rounded-xl bg-stone-50 text-xs outline-none focus:border-[#d9a05b]">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-stone-600 mb-1">Tipo</label>
                             <select id="caixa-tipo" class="w-full p-2.5 border border-[#d1c7bd] rounded-xl bg-stone-50 text-xs outline-none focus:border-[#d9a05b]">
-                                <option value="entrada" class="text-emerald-700 font-bold">➕ Entrada (Venda)</option>
-                                <option value="saida" class="text-rose-700 font-bold">➖ Saída (Gasto)</option>
+                                <option value="entrada">➕ Entrada (Venda)</option>
+                                <option value="saida">➖ Saída (Gasto)</option>
                             </select>
                         </div>
                     </div>
@@ -178,7 +169,7 @@
                     </button>
                 </form>
 
-                <!-- Histórico de Transações -->
+                <!-- Histórico -->
                 <div class="lg:col-span-2 bg-white p-4 rounded-2xl border border-stone-200 text-left h-64 flex flex-col">
                     <h4 class="text-xs font-bold uppercase tracking-wider text-stone-700 mb-3">Histórico Recente</h4>
                     <div id="historico-caixa" class="overflow-y-auto flex-1 space-y-2 pr-1 text-xs divide-y divide-stone-100">
@@ -187,45 +178,45 @@
                 </div>
             </div>
         </div>
+
     </main>
 
-    <script type="module">
-        // CONFIGURAÇÃO REAL DO SEU SUPABASE
-        const SUPABASE_URL = "https://chssifwpqrehztdyfssl.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_fRdHLOKe1zxnVbUgdqiB1g_i3LPqDSE"; 
+    <script>
+        const BACK4APP_URL = "https://parseapi.back4app.com";
+        const APP_ID = "LHD9lPGKfZ6u9WLaAlNio9lKDTaaRQla9XcLr4iV";
+        const REST_KEY = "sKtR5OHOmgq2BDUWEifW3XG1PB9V0QthUaYI1lok";
 
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const headers = {
+            "X-Parse-Application-Id": APP_ID,
+            "X-Parse-REST-API-Key": REST_KEY,
+            "Content-Type": "application/json"
+        };
 
-        // ELEMENTOS DO DOM (CARDÁPIO)
-        const formProduto = document.getElementById('form-produto');
-        const prodId = document.getElementById('prod-id');
-        const prodNome = document.getElementById('prod-nome');
-        const prodPreco = document.getElementById('prod-preco');
+        // ─── ELEMENTOS DOM ───────────────────────────────────────
+        const formProduto    = document.getElementById('form-produto');
+        const prodId         = document.getElementById('prod-id');
+        const prodNome       = document.getElementById('prod-nome');
+        const prodPreco      = document.getElementById('prod-preco');
         const prodDisponivel = document.getElementById('prod-disponivel');
-        const prodDescricao = document.getElementById('prod-descricao');
-        const prodImagem = document.getElementById('prod-imagem');
-        const formTitulo = document.getElementById('form-titulo');
-        const btnSalvar = document.getElementById('btn-salvar');
-        const btnCancelar = document.getElementById('btn-cancelar');
+        const prodDescricao  = document.getElementById('prod-descricao');
+        const prodImagem     = document.getElementById('prod-imagem');
+        const formTitulo     = document.getElementById('form-titulo');
+        const btnSalvar      = document.getElementById('btn-salvar');
+        const btnCancelar    = document.getElementById('btn-cancelar');
         const tabelaProdutos = document.getElementById('tabela-produtos');
         const listaAvaliacoes = document.getElementById('lista-admin-avaliacoes');
-
-        // ELEMENTOS DO DOM (CAIXA)
-        const formCaixa = document.getElementById('form-caixa');
-        const caixaDescricao = document.getElementById('caixa-descricao');
-        const caixaValor = document.getElementById('caixa-valor');
-        const caixaTipo = document.getElementById('caixa-tipo');
         const historicoCaixa = document.getElementById('historico-caixa');
 
-        // FUNÇÃO: CARREGAR PRODUTOS NA TABELA
+        // ─── PRODUTOS ────────────────────────────────────────────
         async function renderizarProdutos() {
             try {
-                const { data: produtos, error } = await supabase.from('produtos').select('*').order('nome', { ascending: true });
-                if (error) throw error;
-                
+                const res = await fetch(`${BACK4APP_URL}/classes/produtos?order=nome`, { headers });
+                const data = await res.json();
+                const produtos = data.results || [];
+
                 document.getElementById('total-produtos').innerText = produtos.length;
                 tabelaProdutos.innerHTML = '';
-                
+
                 if (produtos.length === 0) {
                     tabelaProdutos.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-stone-400 text-xs">Nenhum sabor cadastrado ainda.</td></tr>`;
                     return;
@@ -236,7 +227,7 @@
                     tr.className = 'hover:bg-stone-50/50 transition-colors';
                     tr.innerHTML = `
                         <td class="py-3">
-                            <img src="${p.imagem_url || 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&q=80&w=100'}" 
+                            <img src="${p.imagem_url || 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&q=80&w=100'}"
                                  class="w-10 h-10 object-cover rounded-xl border border-stone-200">
                         </td>
                         <td class="py-3 font-bold text-stone-800 text-xs">${p.nome}</td>
@@ -251,16 +242,13 @@
                             <button class="btn-deletar bg-rose-600 text-white px-2.5 py-1 rounded-lg font-medium cursor-pointer hover:bg-rose-700 transition">Excluir</button>
                         </td>
                     `;
-
                     tr.querySelector('.btn-editar').addEventListener('click', () => prepararEdicao(p));
-                    tr.querySelector('.btn-deletar').addEventListener('click', () => deletarProduto(p.id, p.nome));
-
+                    tr.querySelector('.btn-deletar').addEventListener('click', () => deletarProduto(p.objectId, p.nome));
                     tabelaProdutos.appendChild(tr);
                 });
             } catch (err) { console.error('Erro ao listar produtos:', err); }
         }
 
-        // FUNÇÃO: SALVAR OU ATUALIZAR PRODUTO
         formProduto.addEventListener('submit', async (e) => {
             e.preventDefault();
             const payload = {
@@ -273,12 +261,18 @@
 
             try {
                 if (prodId.value) {
-                    const { error } = await supabase.from('produtos').update(payload).eq('id', prodId.value);
-                    if (error) throw error;
+                    await fetch(`${BACK4APP_URL}/classes/produtos/${prodId.value}`, {
+                        method: 'PUT',
+                        headers,
+                        body: JSON.stringify(payload)
+                    });
                     alert('Sabor atualizado com sucesso! ✨');
                 } else {
-                    const { error } = await supabase.from('produtos').insert([payload]);
-                    if (error) throw error;
+                    await fetch(`${BACK4APP_URL}/classes/produtos`, {
+                        method: 'POST',
+                        headers,
+                        body: JSON.stringify(payload)
+                    });
                     alert('Novo sabor adicionado ao cardápio! 🍦');
                 }
                 resetarFormulario();
@@ -287,7 +281,7 @@
         });
 
         function prepararEdicao(p) {
-            prodId.value = p.id;
+            prodId.value = p.objectId;
             prodNome.value = p.nome;
             prodPreco.value = p.preco;
             prodDisponivel.value = String(p.disponivel);
@@ -296,13 +290,16 @@
             formTitulo.innerText = "Editar Sabor";
             btnSalvar.innerText = "Atualizar Sabor";
             btnCancelar.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        async function deletarProduto(id, nome) {
-            if (confirm(`Tem certeza que deseja apagar o sabor "${nome}" permanentemente do cardápio?`)) {
+        async function deletarProduto(objectId, nome) {
+            if (confirm(`Tem certeza que deseja apagar o sabor "${nome}" permanentemente?`)) {
                 try {
-                    const { error } = await supabase.from('produtos').delete().eq('id', id);
-                    if (error) throw error;
+                    await fetch(`${BACK4APP_URL}/classes/produtos/${objectId}`, {
+                        method: 'DELETE',
+                        headers
+                    });
                     renderizarProdutos();
                 } catch (err) { alert('Erro ao excluir.'); }
             }
@@ -317,11 +314,12 @@
         }
         btnCancelar.addEventListener('click', resetarFormulario);
 
-        // FUNÇÃO: GERENCIAR E CARREGAR AVALIAÇÕES
+        // ─── AVALIAÇÕES ──────────────────────────────────────────
         async function renderizarAvaliacoes() {
             try {
-                const { data: avaliacoes, error } = await supabase.from('avaliacoes').select('*').order('criado_em', { ascending: false });
-                if (error) throw error;
+                const res = await fetch(`${BACK4APP_URL}/classes/avaliacoes?order=-createdAt`, { headers });
+                const data = await res.json();
+                const avaliacoes = data.results || [];
 
                 document.getElementById('total-comentarios').innerText = avaliacoes.length;
                 listaAvaliacoes.innerHTML = '';
@@ -333,4 +331,117 @@
 
                 avaliacoes.forEach(item => {
                     const div = document.createElement('div');
-                    div.className = 'bg-[#f7f2e7]/40 border border-stone-200/60 p-4 roun
+                    div.className = 'bg-[#f7f2e7]/40 border border-stone-200/60 p-4 rounded-2xl flex justify-between items-start gap-4';
+                    div.innerHTML = `
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="font-bold text-xs text-[#2b1a11]">${item.nome}</span>
+                                <span class="text-xs">${'⭐'.repeat(item.estrelas)}</span>
+                            </div>
+                            <p class="text-xs text-stone-600 italic">"${item.comentario}"</p>
+                            <span class="text-[10px] text-stone-400 mt-1 block">${new Date(item.createdAt).toLocaleDateString('pt-BR')}</span>
+                        </div>
+                        <button class="btn-del-aval bg-rose-100 text-rose-700 px-2.5 py-1 rounded-lg text-[10px] font-bold cursor-pointer hover:bg-rose-200 transition shrink-0">Excluir</button>
+                    `;
+                    div.querySelector('.btn-del-aval').addEventListener('click', () => deletarAvaliacao(item.objectId));
+                    listaAvaliacoes.appendChild(div);
+                });
+            } catch (err) { console.error('Erro ao carregar avaliações:', err); }
+        }
+
+        async function deletarAvaliacao(objectId) {
+            if (confirm('Deseja excluir esta avaliação?')) {
+                try {
+                    await fetch(`${BACK4APP_URL}/classes/avaliacoes/${objectId}`, {
+                        method: 'DELETE',
+                        headers
+                    });
+                    renderizarAvaliacoes();
+                } catch (err) { alert('Erro ao excluir avaliação.'); }
+            }
+        }
+
+        // ─── CAIXA ───────────────────────────────────────────────
+        async function renderizarCaixa() {
+            try {
+                const res = await fetch(`${BACK4APP_URL}/classes/caixa?order=-createdAt&limit=50`, { headers });
+                const data = await res.json();
+                const movs = data.results || [];
+
+                let entradas = 0, saidas = 0;
+                movs.forEach(m => {
+                    if (m.tipo === 'entrada') entradas += Number(m.valor);
+                    else saidas += Number(m.valor);
+                });
+
+                const saldo = entradas - saidas;
+                document.getElementById('caixa-entradas').innerText = `R$ ${entradas.toFixed(2).replace('.', ',')}`;
+                document.getElementById('caixa-saidas').innerText   = `R$ ${saidas.toFixed(2).replace('.', ',')}`;
+                const elSaldo = document.getElementById('caixa-saldo');
+                elSaldo.innerText = `R$ ${saldo.toFixed(2).replace('.', ',')}`;
+                elSaldo.className = `text-xl font-black mt-1 ${saldo >= 0 ? 'text-emerald-700' : 'text-rose-700'}`;
+
+                historicoCaixa.innerHTML = '';
+                if (movs.length === 0) {
+                    historicoCaixa.innerHTML = '<p class="text-center text-stone-400 py-6">Nenhuma movimentação ainda.</p>';
+                    return;
+                }
+
+                movs.forEach(m => {
+                    const div = document.createElement('div');
+                    div.className = 'flex justify-between items-center py-2';
+                    div.innerHTML = `
+                        <div>
+                            <span class="font-medium text-stone-700">${m.descricao}</span>
+                            <span class="block text-[10px] text-stone-400">${new Date(m.createdAt).toLocaleDateString('pt-BR')}</span>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span class="font-bold ${m.tipo === 'entrada' ? 'text-emerald-700' : 'text-rose-700'}">
+                                ${m.tipo === 'entrada' ? '+' : '-'} R$ ${Number(m.valor).toFixed(2).replace('.', ',')}
+                            </span>
+                            <button class="btn-del-mov text-[10px] text-rose-400 hover:text-rose-600 cursor-pointer font-bold">✕</button>
+                        </div>
+                    `;
+                    div.querySelector('.btn-del-mov').addEventListener('click', () => deletarMovimentacao(m.objectId));
+                    historicoCaixa.appendChild(div);
+                });
+            } catch (err) { console.error('Erro ao carregar caixa:', err); }
+        }
+
+        document.getElementById('form-caixa').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                descricao: document.getElementById('caixa-descricao').value.trim(),
+                valor: parseFloat(document.getElementById('caixa-valor').value),
+                tipo: document.getElementById('caixa-tipo').value
+            };
+            try {
+                await fetch(`${BACK4APP_URL}/classes/caixa`, {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify(payload)
+                });
+                document.getElementById('form-caixa').reset();
+                renderizarCaixa();
+            } catch (err) { alert('Erro ao lançar movimentação.'); }
+        });
+
+        async function deletarMovimentacao(objectId) {
+            if (confirm('Deseja excluir esta movimentação?')) {
+                try {
+                    await fetch(`${BACK4APP_URL}/classes/caixa/${objectId}`, {
+                        method: 'DELETE',
+                        headers
+                    });
+                    renderizarCaixa();
+                } catch (err) { alert('Erro ao excluir movimentação.'); }
+            }
+        }
+
+        // ─── INIT ────────────────────────────────────────────────
+        renderizarProdutos();
+        renderizarAvaliacoes();
+        renderizarCaixa();
+    </script>
+</body>
+</html>
