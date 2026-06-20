@@ -3,309 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Admin | Dindin Gourmet</title>
-    <!-- Tailwind CSS v4 para estilização premium -->
+    <title>Painel Administrativo | Dindin Gourmet</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Script do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --cor-fundo: #fcf9f2;      
+            --cor-texto-escuro: #2b1a11; 
+            --cor-detalhe: #d9a05b;    
+        }
+        body { background-color: var(--cor-fundo); color: var(--cor-texto-escuro); font-family: 'Segoe UI', system-ui, sans-serif; }
+    </style>
 </head>
-<body class="bg-[#fcf9f2] text-[#2b1a11] font-sans min-h-screen">
+<body class="min-h-screen p-4 md:p-8 flex flex-col items-center justify-between">
 
-    <!-- HEADER DO PAINEL -->
-    <header class="bg-[#2b1a11] text-[#fcf9f2] p-6 shadow-md flex justify-between items-center">
-        <div>
-            <h1 class="text-2xl font-serif font-black tracking-tight">Dindin Supremo</h1>
-            <p class="text-xs text-[#d9a05b] uppercase tracking-widest font-bold mt-1">Painel de Controle Administrativo</p>
-        </div>
-        <div class="text-right text-xs">
-            <span class="text-stone-400 block">Gerenciador Ativo</span>
-            <span class="font-bold text-[#d9a05b]">Sobral - CE</span>
-        </div>
-    </header>
-
-    <main class="max-w-6xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
+<div id="modal-autenticacao" class="fixed inset-0 bg-[#1e120c]/90 backdrop-blur-md z-[2000] flex items-center justify-center p-4">
+    <div class="bg-[#fcf9f2] border border-[#2b1a11]/10 w-full max-w-xs rounded-3xl p-6 text-center shadow-2xl">
+        <span class="text-4xl">🔐</span>
+        <h4 class="font-serif font-bold text-lg mt-3 mb-1 text-[#2b1a11]">Painel Protegido</h4>
+        <p class="text-xs text-stone-500 mb-6">Insira a chave mestra de acesso</p>
         
-        <!-- COLUNA ESQUERDA: FORMULÁRIO (CADASTRAR / EDITAR) -->
-        <div class="lg:col-span-1 space-y-6">
-            <div class="bg-[#f7f2e7] border border-[#2b1a11]/10 rounded-3xl p-6 shadow-xs">
-                <h2 id="form-titulo" class="text-lg font-serif font-bold mb-2">Cadastrar Novo Dindin</h2>
-                <p class="text-xs text-stone-500 mb-6">Preencha as informações para atualizar seu cardápio em tempo real.</p>
-                
-                <form id="form-produto" class="space-y-4">
-                    <input type="hidden" id="prod-id">
-                    
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Nome do Sabor</label>
-                        <input type="text" id="prod-nome" required placeholder="Ex: Ninho com Nutella" 
-                               class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b]">
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Preço (R$)</label>
-                            <input type="number" step="0.01" id="prod-preco" required placeholder="5.00" 
-                                   class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b]">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Disponível?</label>
-                            <select id="prod-disponivel" class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b]">
-                                <option value="true">Sim (Visível)</option>
-                                <option value="false">Não (Ocultar)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Descrição / Ingredientes</label>
-                        <textarea id="prod-descricao" rows="3" placeholder="Ex: Base super cremosa de leite ninho com recheio legítimo de Nutella." 
-                                  class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b] resize-none"></textarea>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Link da Imagem (URL)</label>
-                        <input type="url" id="prod-imagem" placeholder="https://linkdafoto.com/imagem.jpg" 
-                               class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b]">
-                        <p class="text-[10px] text-stone-500 mt-1">Dica: Você pode upar fotos em sites como o <a href="https://imgbb.com/" target="_blank" class="text-[#d9a05b] underline">ImgBB</a> e colar o link direto aqui.</p>
-                    </div>
-
-                    <div class="flex gap-2 pt-2">
-                        <button type="submit" id="btn-salvar" class="flex-1 py-3 text-white font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer transition shadow-md bg-[#2b1a11] hover:bg-[#3d2518]">
-                            Salvar Sabor
-                        </button>
-                        <button type="button" id="btn-cancelar" class="hidden py-3 px-4 text-stone-600 font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer transition bg-stone-200 hover:bg-stone-300">
-                            Cancelar
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- COLUNA DIREITA: LISTAGEM DE PRODUTOS E COMENTÁRIOS -->
-        <div class="lg:col-span-2 space-y-8">
-            
-            <!-- LISTA DE PRODUTOS CADASTRADOS -->
-            <div class="bg-white border border-[#2b1a11]/5 rounded-3xl p-6 shadow-xs">
-                <h3 class="text-lg font-serif font-bold mb-4 flex justify-between items-center">
-                    <span>🍦 Sabores no Cardápio</span>
-                    <span id="total-produtos" class="text-xs bg-[#f7f2e7] text-[#2b1a11] px-3 py-1 rounded-full font-sans font-bold">0</span>
-                </h3>
-                
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm border-collapse">
-                        <thead>
-                            <tr class="border-b border-stone-200 text-stone-500 text-xs uppercase tracking-wider">
-                                <th class="pb-3 font-bold">Foto</th>
-                                <th class="pb-3 font-bold">Sabor</th>
-                                <th class="pb-3 font-bold">Preço</th>
-                                <th class="pb-3 font-bold">Status</th>
-                                <th class="pb-3 text-right font-bold">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabela-produtos" class="divide-y divide-stone-100">
-                            <tr>
-                                <td colspan="5" class="py-6 text-center text-stone-400 animate-pulse">Buscando dindins...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- GERENCIADOR DE COMENTÁRIOS / AVALIAÇÕES -->
-            <div class="bg-white border border-[#2b1a11]/5 rounded-3xl p-6 shadow-xs">
-                <h3 class="text-lg font-serif font-bold mb-4 flex justify-between items-center">
-                    <span>💬 Avaliações dos Clientes</span>
-                    <span id="total-comentarios" class="text-xs bg-[#f7f2e7] text-[#2b1a11] px-3 py-1 rounded-full font-sans font-bold">0</span>
-                </h3>
-                
-                <div class="space-y-4" id="lista-admin-avaliacoes">
-                    <p class="text-center text-stone-400 py-4 animate-pulse text-sm">Carregando comentários...</p>
-                </div>
-            </div>
-
-        </div>
-    </main>
-
-    <script type="module">
-        // CONFIGURAÇÃO REAL DO SEU SUPABASE
-        const SUPABASE_URL = "https://chssifwpqrehztdyfssl.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_fRdHLOKe1zxnVbUgdqiB1g_i3LPqDSE"; 
-
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        // ELEMENTOS DO DOM
-        const formProduto = document.getElementById('form-produto');
-        const prodId = document.getElementById('prod-id');
-        const prodNome = document.getElementById('prod-nome');
-        const prodPreco = document.getElementById('prod-preco');
-        const prodDisponivel = document.getElementById('prod-disponivel');
-        const prodDescricao = document.getElementById('prod-descricao');
-        const prodImagem = document.getElementById('prod-imagem');
+        <input type="password" id="campo-chave-admin" placeholder="••••••••" 
+               class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-center text-sm focus:border-[#d9a05b] mb-4">
         
-        const formTitulo = document.getElementById('form-titulo');
-        const btnSalvar = document.getElementById('btn-salvar');
-        const btnCancelar = document.getElementById('btn-cancelar');
-        const tabelaProdutos = document.getElementById('tabela-produtos');
-        const listaAvaliacoes = document.getElementById('lista-admin-avaliacoes');
+        <div class="flex gap-2">
+            <button id="btn-entrar-painel" class="flex-1 py-3 bg-[#2b1a11] text-white text-xs font-bold uppercase rounded-xl cursor-pointer shadow-md transition active:scale-95">Entrar</button>
+            <button id="btn-voltar-site" class="py-3 px-4 bg-stone-200 text-stone-600 text-xs font-bold uppercase rounded-xl cursor-pointer transition active:scale-95">Voltar</button>
+        </div>
+    </div>
+</div>
 
-        // FUNÇÃO: CARREGAR PRODUTOS NA TABELA
-        async function renderizarProdutos() {
-            try {
-                const { data: produtos, error } = await supabase.from('produtos').select('*').order('nome', { ascending: true });
-                if (error) throw error;
-                
-                document.getElementById('total-produtos').innerText = produtos.length;
-                tabelaProdutos.innerHTML = '';
-                
-                if (produtos.length === 0) {
-                    tabelaProdutos.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-stone-400 text-xs">Nenhum sabor cadastrado ainda.</td></tr>`;
-                    return;
-                }
+<main id="conteudo-painel" class="hidden w-full max-w-4xl space-y-8 animate-fadeIn mb-12">
+    
+    <div class="flex flex-col sm:flex-row justify-between items-center bg-white border border-[#2b1a11]/5 rounded-3xl p-6 shadow-xs gap-4">
+        <div class="text-center sm:text-left">
+            <h2 class="text-2xl font-serif font-bold text-[#2b1a11]">Gerenciamento de Vendas</h2>
+            <p class="text-xs text-stone-500">Adicione sabores, altere valores e modere avaliações.</p>
+        </div>
+        <button id="btn-logout" class="py-2.5 px-6 bg-red-800 text-white text-xs font-bold uppercase rounded-xl cursor-pointer shadow-sm">Sair do Painel</button>
+    </div>
 
-                produtos.forEach(p => {
-                    const tr = document.createElement('tr');
-                    tr.className = 'hover:bg-stone-50/50 transition-colors';
-                    tr.innerHTML = `
-                        <td class="py-3">
-                            <img src="${p.imagem_url || 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&q=80&w=100'}" 
-                                 class="w-10 h-10 object-cover rounded-xl border border-stone-200">
-                        </td>
-                        <td class="py-3 font-bold text-stone-800 text-xs">${p.nome}</td>
-                        <td class="py-3 text-xs">R$ ${Number(p.preco).toFixed(2).replace('.', ',')}</td>
-                        <td class="py-3 text-xs">
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${p.disponivel ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
-                                ${p.disponivel ? 'Ativo' : 'Oculto'}
-                            </span>
-                        </td>
-                        <td class="py-3 text-right space-x-1 text-xs">
-                            <button class="btn-editar bg-[#d9a05b] text-white px-2.5 py-1 rounded-lg font-medium cursor-pointer hover:bg-[#b88243] transition">Editar</button>
-                            <button class="btn-deletar bg-rose-600 text-white px-2.5 py-1 rounded-lg font-medium cursor-pointer hover:bg-rose-700 transition">Excluir</button>
-                        </td>
-                    `;
+    <section class="bg-[#f7f2e7] border border-[#2b1a11]/5 rounded-3xl p-6 shadow-xs">
+        <h3 class="text-lg font-serif font-bold mb-4 text-[#2b1a11]">✨ Adicionar Novo Dindin</h3>
+        <form id="form-novo-sabor" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-xs font-bold uppercase text-stone-600 mb-1">Nome do Sabor</label>
+                <input type="text" id="add-nome" required placeholder="Ex: Ninho com Nutella" class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b]">
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase text-stone-600 mb-1">Preço (R$)</label>
+                <input type="number" id="add-preco" required step="0.01" placeholder="6.00" class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b]">
+            </div>
+            <div class="md:col-span-2">
+                <label class="block text-xs font-bold uppercase text-stone-600 mb-1">URL da Imagem (Opcional)</label>
+                <input type="url" id="add-imagem" placeholder="https://images.unsplash.com/..." class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b]">
+            </div>
+            <div class="md:col-span-2">
+                <label class="block text-xs font-bold uppercase text-stone-600 mb-1">Descrição Curta</label>
+                <textarea id="add-descricao" rows="2" placeholder="Descreva os diferenciais desse dindin..." class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b] resize-none"></textarea>
+            </div>
+            <button type="submit" id="btn-submit-sabor" class="md:col-span-2 py-3 bg-[#2b1a11] text-white font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer shadow-md transition active:scale-[0.99]">
+                Salvar Novo Dindin no Banco
+            </button>
+        </form>
+    </section>
 
-                    // Ouvintes de clique para edição e exclusão
-                    tr.querySelector('.btn-editar').addEventListener('click', () => prepararEdicao(p));
-                    tr.querySelector('.btn-deletar').addEventListener('click', () => deletarProduto(p.id, p.nome));
+    <section class="bg-white border border-[#2b1a11]/5 rounded-3xl p-6 shadow-xs">
+        <h3 class="text-lg font-serif font-bold mb-4 text-[#2b1a11]">🍦 Sabores no Cardápio Atual</h3>
+        <div id="tabela-admin-produtos" class="space-y-4">
+            <p class="text-center text-stone-400 animate-pulse text-sm">Buscando sabores salvos...</p>
+        </div>
+    </section>
 
-                    tabelaProdutos.appendChild(tr);
-                });
-            } catch (err) { console.error('Erro ao listar produtos:', err); }
+    <section class="bg-[#f7f2e7] border border-[#2b1a11]/5 rounded-3xl p-6 shadow-xs">
+        <h3 class="text-lg font-serif font-bold mb-4 text-[#2b1a11]">💬 Controle de Avaliações dos Clientes</h3>
+        <div id="lista-admin-avaliacoes" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <p class="col-span-full text-center text-stone-400 text-sm">Carregando depoimentos enviados...</p>
+        </div>
+    </section>
+
+    <div class="pt-4 flex justify-center">
+        <button id="btn-voltar-rodape" class="w-full max-w-xs py-4 bg-stone-200 hover:bg-stone-300 text-[#2b1a11] font-bold text-xs uppercase tracking-wider rounded-2xl cursor-pointer shadow-sm transition active:scale-95 flex items-center justify-center gap-2">
+            ← Voltar ao Cardápio Público
+        </button>
+    </div>
+</main>
+
+<script type="module">
+    // CONFIGURAÇÃO REAL DO SEU SUPABASE
+    const SUPABASE_URL = "https://chssifwpqrehztdyfssl.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_fRdHLOKe1zxnVbUgdqiB1g_i3LPqDSE"; 
+
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const modalAutenticacao = document.getElementById('modal-autenticacao');
+    const conteudoPainel = document.getElementById('conteudo-painel');
+    const campoChave = document.getElementById('campo-chave-admin');
+    const btnEntrar = document.getElementById('btn-entrar-painel');
+    const btnVoltar = document.getElementById('btn-voltar-site');
+    const btnLogout = document.getElementById('btn-logout');
+    const btnVoltarRodape = document.getElementById('btn-voltar-rodape');
+
+    campoChave.focus();
+
+    function realizarLoginAdmin() {
+        if (campoChave.value.trim() === 'admin') {
+            modalAutenticacao.classList.add('hidden'); 
+            conteudoPainel.classList.remove('hidden'); 
+            carregarDadosPainel(); 
+        } else {
+            alert('Código secreto inválido!');
+            campoChave.value = '';
         }
+    }
 
-        // FUNÇÃO: SALVAR OU ATUALIZAR PRODUTO
-        formProduto.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const payload = {
-                nome: prodNome.value.trim(),
-                preco: parseFloat(prodPreco.value),
-                disponivel: prodDisponivel.value === 'true',
-                descricao: prodDescricao.value.trim(),
-                imagem_url: prodImagem.value.trim() || null
-            };
+    btnEntrar.addEventListener('click', realizarLoginAdmin);
+    campoChave.addEventListener('keypress', (e) => { if (e.key === 'Enter') realizarLoginAdmin(); });
+    
+    // Ações de redirecionamento para o site público
+    btnVoltar.addEventListener('click', () => { window.location.href = 'index.html'; });
+    btnLogout.addEventListener('click', () => { window.location.href = 'index.html'; });
+    btnVoltarRodape.addEventListener('click', () => { window.location.href = 'index.html'; });
 
-            try {
-                if (prodId.value) {
-                    // MODO EDIÇÃO
-                    const { error } = await supabase.from('produtos').update(payload).eq('id', prodId.value);
-                    if (error) throw error;
-                    alert('Sabor atualizado com sucesso! ✨');
-                } else {
-                    // MODO CRIAÇÃO
-                    const { error } = await supabase.from('produtos').insert([payload]);
-                    if (error) throw error;
-                    alert('Novo sabor adicionado ao cardápio! 🍦');
-                }
-                
-                resetarFormulario();
-                renderizarProdutos();
-            } catch (err) {
-                alert('Erro ao salvar as informações do dindin.');
-                console.error(err);
+    function carregarDadosPainel() {
+        listarProdutosAdmin();
+        listarAvaliacoesAdmin();
+    }
+
+    // LISTAR PRODUTOS COM BOTÃO DE EXCLUSÃO
+    async function listarProdutosAdmin() {
+        const container = document.getElementById('tabela-admin-produtos');
+        try {
+            const { data: produtos, error } = await supabase.from('produtos').select('*').order('nome');
+            container.innerHTML = '';
+            if (error || !produtos || produtos.length === 0) {
+                container.innerHTML = '<p class="text-stone-400 text-center py-4 text-sm">Nenhum produto cadastrado no banco.</p>';
+                return;
             }
-        });
-
-        function prepararEdicao(p) {
-            prodId.value = p.id;
-            prodNome.value = p.nome;
-            prodPreco.value = p.preco;
-            prodDisponivel.value = String(p.disponivel);
-            prodDescricao.value = p.descricao || '';
-            prodImagem.value = p.imagem_url || '';
-            
-            formTitulo.innerText = "Editar Sabor";
-            btnSalvar.innerText = "Atualizar Sabor";
-            btnCancelar.classList.remove('hidden');
-        }
-
-        async function deletarProduto(id, nome) {
-            if (confirm(`Tem certeza que deseja apagar o sabor "${nome}" permanentemente do cardápio?`)) {
-                try {
-                    const { error } = await supabase.from('produtos').delete().eq('id', id);
-                    if (error) throw error;
-                    renderizarProdutos();
-                } catch (err) { alert('Erro ao excluir item.'); }
-            }
-        }
-
-        function resetarFormulario() {
-            formProduto.reset();
-            prodId.value = '';
-            formTitulo.innerText = "Cadastrar Novo Dindin";
-            btnSalvar.innerText = "Salvar Sabor";
-            btnCancelar.classList.add('hidden');
-        }
-        btnCancelar.addEventListener('click', resetarFormulario);
-
-        // FUNÇÃO: GERENCIAR E CARREGAR AVALIAÇÕES dos clientes
-        async function renderizarAvaliacoes() {
-            try {
-                const { data: avaliacoes, error } = await supabase.from('avaliacoes').select('*').order('criado_em', { ascending: false });
-                if (error) throw error;
-
-                document.getElementById('total-comentarios').innerText = avaliacoes.length;
-                listaAvaliacoes.innerHTML = '';
-
-                if (avaliacoes.length === 0) {
-                    listaAvaliacoes.innerHTML = '<p class="text-center text-stone-400 py-4 text-xs">Nenhum comentário publicado pelos clientes.</p>';
-                    return;
-                }
-
-                avaliacoes.forEach(item => {
-                    const div = document.createElement('div');
-                    div.className = 'bg-[#f7f2e7]/40 border border-stone-200/60 p-4 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4';
-                    div.innerHTML = `
-                        <div class="flex-1 text-left">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="font-bold text-sm text-stone-800">${item.nome}</span>
-                                <span class="text-amber-500 text-xs">${'★'.repeat(item.estrelas)}</span>
-                            </div>
-                            <p class="text-xs text-stone-600 italic">"${item.comentario}"</p>
+            produtos.forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'flex flex-col sm:flex-row justify-between items-center bg-stone-50 border border-stone-100 p-4 rounded-2xl gap-3 text-sm';
+                item.innerHTML = `
+                    <div class="flex items-center gap-4 text-left w-full sm:w-auto">
+                        <img src="${p.imagem_url || 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&q=80&w=200'}" class="w-12 h-12 object-cover rounded-xl shadow-xs">
+                        <div>
+                            <h5 class="font-bold text-[#2b1a11]">${p.nome}</h5>
+                            <span class="text-xs font-semibold text-[#d9a05b]">R$ ${Number(p.preco).toFixed(2).replace('.', ',')}</span>
                         </div>
-                        <div class="flex gap-2 self-end md:self-center">
-                            <button class="btn-apagar-coment bg-stone-200 hover:bg-rose-100 hover:text-rose-700 text-stone-600 px-3 py-1.5 rounded-lg font-bold text-xs cursor-pointer transition">
-                                Remover
-                            </button>
-                        </div>
-                    `;
-
-                    div.querySelector('.btn-apagar-coment').addEventListener('click', async () => {
-                        if (confirm(`Remover o comentário de "${item.nome}" permanentemente?`)) {
-                            try {
-                                const { error: errDel } = await supabase.from('avaliacoes').delete().eq('id', item.id);
-                                if (errDel) throw errDel;
-                                renderizarAvaliacoes();
-                            } catch (e) { alert('Erro ao remover depoimento.'); }
-                        }
-                    });
-
-                    listaAvaliacoes.appendChild(div);
+                    </div>
+                    <button class="w-full sm:w-auto px-4 py-2 bg-red-100 text-red-800 font-bold text-xs uppercase rounded-xl cursor-pointer hover:bg-red-200 transition btn-deletar-prod">Excluir</button>
+                `;
+                item.querySelector('.btn-deletar-prod').addEventListener('click', async () => {
+                    if (confirm(`Deseja mesmo remover o sabor "${p.nome}" permanentemente?`)) {
+                        await supabase.from('produtos').delete().eq('id', p.id);
+                        listarProdutosAdmin();
+                    }
                 });
-            } catch (err) { console.error('Erro ao obter avaliações:', err); }
-        }
+                container.appendChild(item);
+            });
+        } catch (e) { container.innerHTML = '<p class="text-red-700 text-center text-xs">Erro na conexão do catálogo.</p>'; }
+    }
 
-        // CARGA INICIAL DOS DADOS
-        renderizarProdutos();
-        renderizarAvaliacoes();
-    </script>
+    // SALVAR NOVO SABOR (BLINDADO CONTRA RESET DE TELA MOBILE)
+    document.getElementById('form-novo-sabor').addEventListener('submit', async (e) => {
+        e.preventDefault(); 
+        e.stopPropagation();
+
+        const btnSalvar = document.getElementById('btn-submit-sabor');
+        const textoOriginal = btnSalvar.innerText;
+        
+        btnSalvar.innerText = "⏳ Salvando no Banco...";
+        btnSalvar.disabled = true;
+
+        const nome = document.getElementById('add-nome').value.trim();
+        const preco = parseFloat(document.getElementById('add-preco').value);
+        const imagem_url = document.getElementById('add-imagem').value.trim();
+        const descricao = document.getElementById('add-descricao').value.trim();
+
+        try {
+            const { error } = await supabase
+                .from('produtos')
+                .insert([{ 
+                    nome, 
+                    preco, 
+                    imagem_url: imagem_url || null, 
+                    descricao: descricao || null, 
+                    disponivel: true 
+                }]);
+
+            if (error) throw error;
+
+            alert('🍦 Sabor adicionado com sucesso!');
+            document.getElementById('form-novo-sabor').reset();
+            await listarProdutosAdmin(); 
+            
+        } catch (err) { 
+            console.error(err);
+            alert('Erro ao salvar: ' + (err.message || 'Verifique os campos ou conexões.')); 
+        } finally {
+            btnSalvar.innerText = textoOriginal;
+            btnSalvar.disabled = false;
+        }
+    });
+
+    // LISTAR E MODERAR AVALIAÇÕES
+    async function listarAvaliacoesAdmin() {
+        const container = document.getElementById('lista-admin-avaliacoes');
+        try {
+            const { data: avaliacoes, error } = await supabase.from('avaliacoes').select('*').order('criado_em', { ascending: false });
+            container.innerHTML = '';
+            if (error || !avaliacoes || avaliacoes.length === 0) {
+                container.innerHTML = '<p class="col-span-full text-stone-400 text-center py-4 text-xs">Nenhum comentário recebido.</p>';
+                return;
+            }
+            avaliacoes.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'bg-white p-4 rounded-2xl border border-stone-200 flex flex-col justify-between text-left text-xs gap-3';
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between font-bold mb-1">
+                            <span class="text-[#2b1a11]">${item.nome}</span>
+                            <span>${'⭐'.repeat(item.estrelas)}</span>
+                        </div>
+                        <p class="text-stone-600 italic">"${item.comentario}"</p>
+                    </div>
+                    <button class="w-full py-1.5 bg-stone-100 hover:bg-red-100 text-stone-700 hover:text-red-800 font-bold uppercase rounded-lg transition btn-deletar-aval">Apagar Depoimento</button>
+                `;
+                card.querySelector('.btn-deletar-aval').addEventListener('click', async () => {
+                    if (confirm('Remover essa avaliação do seu site?')) {
+                        await supabase.from('avaliacoes').delete().eq('id', item.id);
+                        listarAvaliacoesAdmin();
+                    }
+                });
+                container.appendChild(card);
+            });
+        } catch (e) { container.innerHTML = '<p class="col-span-full text-red-700 text-xs">Erro ao carregar depoimentos.</p>'; }
+    }
+</script>
 </body>
 </html>
