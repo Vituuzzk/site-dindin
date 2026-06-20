@@ -14,6 +14,7 @@
             --cor-detalhe: #d9a05b;
         }
         body { background-color: var(--cor-fundo); color: var(--cor-texto-escuro); font-family: 'Segoe UI', Georgia, serif; }
+
         .watermark {
             position: fixed; bottom: 15px; right: 20px;
             color: var(--cor-texto-escuro); font-size: 0.75em; opacity: 0.3;
@@ -21,34 +22,102 @@
             transition: opacity 0.2s; user-select: none; -webkit-user-select: none; text-decoration: none;
         }
         .watermark:hover { opacity: 0.8; }
+
+        /* ANIMAÇÕES */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes pulse-soft {
+            0%, 100% { transform: scale(1); }
+            50%       { transform: scale(1.04); }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50%       { transform: translateY(-8px); }
+        }
+
+        .anim-fade-up   { animation: fadeInUp 0.7s ease both; }
+        .anim-fade-left { animation: fadeInLeft 0.7s ease both; }
+        .anim-fade-right{ animation: fadeInRight 0.7s ease both; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+
+        .float-badge { animation: float 3s ease-in-out infinite; }
+
+        /* BOTÕES COM BOUNCE */
+        .btn-bounce {
+            transition: transform 0.15s cubic-bezier(.36,.07,.19,.97), box-shadow 0.15s ease;
+        }
+        .btn-bounce:hover {
+            transform: translateY(-4px) scale(1.04);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+        .btn-bounce:active {
+            transform: translateY(1px) scale(0.97);
+        }
+
+        /* CARDS COM HOVER */
+        .card-hover {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 40px rgba(43,26,17,0.12);
+        }
+
+        /* SCROLL REVEAL */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between">
 
     <a href="admin.html" class="watermark">by VR Web Solutions</a>
 
+    <!-- TOP BAR -->
     <div class="bg-[#2b1a11] text-[#fcf9f2] text-xs py-2 px-4 flex flex-wrap justify-between items-center gap-2 md:px-12 border-b border-white/5">
         <div class="flex items-center gap-1">🛵 Entregas exclusivamente em Sobral - CE</div>
         <div class="flex items-center gap-1">✨ Feito com ingredientes selecionados</div>
         <div class="font-semibold text-[#d9a05b]">(88) 99272-1857</div>
     </div>
 
+    <!-- HEADER -->
     <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 px-4 py-4 md:px-12 flex justify-between items-center border-b border-[#2b1a11]/5 shadow-xs">
         <div class="flex flex-col items-start leading-none">
             <span class="text-2xl font-serif font-black tracking-tight" style="color: var(--cor-texto-escuro)">Dindin</span>
             <span class="text-xs uppercase tracking-[0.3em] font-bold mt-0.5" style="color: var(--cor-detalhe)">• Gourmet •</span>
         </div>
         <nav class="hidden md:flex gap-8 text-sm font-medium tracking-wide" style="color: var(--cor-texto-escuro)">
-            <a href="#" class="hover:text-[--cor-detalhe] transition">Início</a>
-            <a href="#cardapio" class="hover:text-[--cor-detalhe] transition">Sabores</a>
-            <a href="#beneficios" class="hover:text-[--cor-detalhe] transition">Diferenciais</a>
-            <a href="#avaliacoes" class="hover:text-[--cor-detalhe] transition">Avaliações</a>
+            <a href="#" class="hover:text-[#d9a05b] transition">Início</a>
+            <a href="#cardapio" class="hover:text-[#d9a05b] transition">Sabores</a>
+            <a href="#beneficios" class="hover:text-[#d9a05b] transition">Diferenciais</a>
+            <a href="#avaliacoes" class="hover:text-[#d9a05b] transition">Avaliações</a>
         </nav>
         <div class="w-28 md:w-auto"></div>
     </header>
 
+    <!-- HERO -->
     <section class="max-w-6xl mx-auto px-6 py-12 md:py-20 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-        <div class="text-left">
+        <div class="text-left anim-fade-left">
             <span class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--cor-detalhe)">Feito artesanalmente</span>
             <h2 class="text-4xl md:text-6xl font-serif font-bold mt-2 mb-6 leading-[1.1]" style="color: var(--cor-texto-escuro)">
                 Dindin gourmet <br><span class="italic font-normal font-sans" style="color: var(--cor-detalhe)">feito com amor ♡</span>
@@ -56,45 +125,49 @@
             <p class="text-stone-600 max-w-md leading-relaxed mb-8 text-base">
                 Cremoso, saboroso e produzido com insumos de altíssima qualidade para transformar os seus momentos em experiências inesquecíveis e incrivelmente refrescantes.
             </p>
-            <a href="#cardapio" class="inline-flex items-center gap-3 text-white font-bold py-4 px-8 rounded-full shadow-lg text-sm uppercase tracking-wider transition hover:scale-105" style="background-color: var(--cor-detalhe)">
+            <a href="#cardapio" class="btn-bounce inline-flex items-center gap-3 text-white font-bold py-4 px-8 rounded-full shadow-lg text-sm uppercase tracking-wider" style="background-color: var(--cor-detalhe)">
                 Ver sabores disponíveis
             </a>
         </div>
-        <div class="relative flex justify-center">
-            <div class="absolute -top-4 -right-4 bg-white border border-[#d9a05b]/30 rounded-full px-4 py-4 text-center w-24 h-24 flex flex-col justify-center items-center shadow-xs">
+        <div class="relative flex justify-center anim-fade-right">
+            <div class="float-badge absolute -top-4 -right-4 bg-white border border-[#d9a05b]/30 rounded-full px-4 py-4 text-center w-24 h-24 flex flex-col justify-center items-center shadow-md z-10">
                 <span class="text-[9px] uppercase font-bold tracking-wider text-stone-400">Textura</span>
                 <span class="text-xs font-bold leading-tight" style="color: var(--cor-texto-escuro)">Super Cremosa</span>
             </div>
-            <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&q=80&w=600" alt="Dindins Gourmet Cremosos" class="w-full max-w-md h-[380px] object-cover rounded-3xl shadow-xl border-4 border-white">
+            <!-- IMAGEM RETRATO -->
+            <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&q=80&w=400&h=560" alt="Dindins Gourmet Cremosos" class="w-64 md:w-72 h-[420px] md:h-[500px] object-cover rounded-3xl shadow-xl border-4 border-white">
         </div>
     </section>
 
+    <!-- BENEFÍCIOS -->
     <section id="beneficios" class="bg-white border-y border-[#2b1a11]/5 py-10 px-6">
         <div class="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-left text-xs">
-            <div class="flex gap-3 items-start"><span class="text-2xl">❄️</span><div><h4 class="font-bold mb-1 uppercase tracking-wide">Entrega em Sobral</h4><p class="text-stone-500">Seu dindin chega congelado e prontinho.</p></div></div>
-            <div class="flex gap-3 items-start"><span class="text-2xl">📦</span><div><h4 class="font-bold mb-1 uppercase tracking-wide">Embalagem Segura</h4><p class="text-stone-500">Cuidadosamente higienizados e selados.</p></div></div>
-            <div class="flex gap-3 items-start"><span class="text-2xl">🍓</span><div><h4 class="font-bold mb-1 uppercase tracking-wide">100% Artesanal</h4><p class="text-stone-500">Frutas frescas e as melhores marcas.</p></div></div>
-            <div class="flex gap-3 items-start"><span class="text-2xl">💳</span><div><h4 class="font-bold mb-1 uppercase tracking-wide">Pagamento Fácil</h4><p class="text-stone-500">Aceitamos Pix e cartões na entrega.</p></div></div>
+            <div class="flex gap-3 items-start reveal"><span class="text-2xl">❄️</span><div><h4 class="font-bold mb-1 uppercase tracking-wide">Entrega em Sobral</h4><p class="text-stone-500">Seu dindin chega congelado e prontinho.</p></div></div>
+            <div class="flex gap-3 items-start reveal delay-1"><span class="text-2xl">📦</span><div><h4 class="font-bold mb-1 uppercase tracking-wide">Embalagem Segura</h4><p class="text-stone-500">Cuidadosamente higienizados e selados.</p></div></div>
+            <div class="flex gap-3 items-start reveal delay-2"><span class="text-2xl">🍓</span><div><h4 class="font-bold mb-1 uppercase tracking-wide">100% Artesanal</h4><p class="text-stone-500">Frutas frescas e as melhores marcas.</p></div></div>
+            <div class="flex gap-3 items-start reveal delay-3"><span class="text-2xl">💳</span><div><h4 class="font-bold mb-1 uppercase tracking-wide">Pagamento Fácil</h4><p class="text-stone-500">Aceitamos Pix e cartões na entrega.</p></div></div>
         </div>
     </section>
 
+    <!-- CARDÁPIO -->
     <section id="cardapio" class="max-w-6xl mx-auto px-6 py-16 text-center">
-        <span class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--cor-detalhe)">Nossos Sabores</span>
-        <h3 class="text-3xl font-serif font-bold mt-1 mb-12" style="color: var(--cor-texto-escuro)">Escolha o seu preferido</h3>
+        <span class="text-xs font-bold uppercase tracking-[0.2em] reveal" style="color: var(--cor-detalhe)">Nossos Sabores</span>
+        <h3 class="text-3xl font-serif font-bold mt-1 mb-12 reveal delay-1" style="color: var(--cor-texto-escuro)">Escolha o seu preferido</h3>
         <div id="lista-produtos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             <p class="col-span-full text-center py-12 text-stone-400 animate-pulse font-medium">Carregando nosso cardápio de dindins...</p>
         </div>
     </section>
 
+    <!-- AVALIAÇÕES -->
     <section id="avaliacoes" class="max-w-6xl mx-auto px-6 py-16 border-t border-[#2b1a11]/5">
         <div class="text-center mb-12">
-            <span class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--cor-detalhe)">O que dizem sobre nós</span>
-            <h3 class="text-3xl font-serif font-bold mt-1" style="color: var(--cor-texto-escuro)">Avaliações dos Clientes</h3>
+            <span class="text-xs font-bold uppercase tracking-[0.2em] reveal" style="color: var(--cor-detalhe)">O que dizem sobre nós</span>
+            <h3 class="text-3xl font-serif font-bold mt-1 reveal delay-1" style="color: var(--cor-texto-escuro)">Avaliações dos Clientes</h3>
         </div>
         <div id="grid-avaliacoes" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             <p class="col-span-full text-center text-stone-400 animate-pulse text-sm">Carregando avaliações dos clientes...</p>
         </div>
-        <div class="max-w-xl mx-auto bg-[#f7f2e7] border border-[#2b1a11]/5 rounded-3xl p-6 md:p-8 text-left shadow-xs">
+        <div class="max-w-xl mx-auto bg-[#f7f2e7] border border-[#2b1a11]/5 rounded-3xl p-6 md:p-8 text-left shadow-xs reveal">
             <h4 class="font-serif font-bold text-lg mb-2 text-[#2b1a11]">Gostou do seu dindin? Deixe sua avaliação!</h4>
             <form id="form-avaliacao" class="space-y-4">
                 <div>
@@ -104,30 +177,31 @@
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Sua Nota (Estrelas)</label>
                     <div class="flex gap-2 text-2xl" id="seletor-estrelas">
-                        <button type="button" class="star-btn text-stone-300 hover:text-amber-500 transition cursor-pointer" data-value="1">★</button>
-                        <button type="button" class="star-btn text-stone-300 hover:text-amber-500 transition cursor-pointer" data-value="2">★</button>
-                        <button type="button" class="star-btn text-stone-300 hover:text-amber-500 transition cursor-pointer" data-value="3">★</button>
-                        <button type="button" class="star-btn text-stone-300 hover:text-amber-500 transition cursor-pointer" data-value="4">★</button>
-                        <button type="button" class="star-btn text-stone-300 hover:text-amber-500 transition cursor-pointer" data-value="5">★</button>
+                        <button type="button" class="star-btn text-stone-300 hover:text-amber-500 transition cursor-pointer btn-bounce" data-value="1">★</button>
+                        <button type="button" class="star-btn text-stone-300 hover:text-amber-500 transition cursor-pointer btn-bounce" data-value="2">★</button>
+                        <button type="button" class="star-btn text-stone-300 hover:text-amber-500 transition cursor-pointer btn-bounce" data-value="3">★</button>
+                        <button type="button" class="star-btn text-stone-300 hover:text-amber-500 transition cursor-pointer btn-bounce" data-value="4">★</button>
+                        <button type="button" class="star-btn text-stone-300 hover:text-amber-500 transition cursor-pointer btn-bounce" data-value="5">★</button>
                     </div>
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Seu Comentário</label>
                     <textarea id="aval-comentario" required rows="3" class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-[#fdfcf7] text-sm focus:border-[#d9a05b] resize-none"></textarea>
                 </div>
-                <button type="submit" class="w-full py-3 text-white font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer transition shadow-md" style="background-color: var(--cor-texto-escuro);">Enviar Avaliação Real</button>
+                <button type="submit" class="btn-bounce w-full py-3 text-white font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer transition shadow-md" style="background-color: var(--cor-texto-escuro);">Enviar Avaliação Real</button>
             </form>
         </div>
     </section>
 
+    <!-- FOOTER -->
     <footer class="bg-[#1e120c] text-[#e3dac9] text-xs mt-16 border-t border-white/5">
         <div class="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
-            <div><h5 class="text-white font-bold uppercase tracking-wider mb-3 text-sm">Dindin Supremo</h5><p class="text-stone-400">Leve sabor e cremosidade para o seu dia a dia.</p></div>
+            <div><h5 class="text-white font-bold uppercase tracking-wider mb-3 text-sm">Dindin Gourmet</h5><p class="text-stone-400">Leve sabor e cremosidade para o seu dia a dia.</p></div>
             <div><h5 class="text-white font-bold uppercase tracking-wider mb-3 text-sm">Fale Conosco</h5><p class="text-[#d9a05b] font-bold text-sm">(88) 99272-1857</p></div>
             <div><h5 class="text-white font-bold uppercase tracking-wider mb-3 text-sm">Garantias</h5><p class="text-stone-400">Pedidos seguros diretos via WhatsApp.</p></div>
         </div>
         <div class="border-t border-white/5 py-6 text-center text-stone-500 flex flex-col sm:flex-row justify-between items-center max-w-6xl mx-auto px-6 gap-2">
-            <p>&copy; 2026 Dindin Supremo Gourmet. Todos os direitos reservados.</p>
+            <p>&copy; 2026 Dindin Gourmet. Todos os direitos reservados.</p>
             <p>Site incrivelmente desenvolvido por <span class="text-[#d9a05b] font-bold">VR Web Solutions</span></p>
         </div>
     </footer>
@@ -141,6 +215,12 @@
 
         let notaSelecionada = 5;
 
+        // SCROLL REVEAL
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+        }, { threshold: 0.15 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
         async function carregarProdutos() {
             const container = document.getElementById('lista-produtos');
             try {
@@ -150,18 +230,22 @@
                     container.innerHTML = '<p class="col-span-full text-center text-stone-400 py-6">Nenhum dindin disponível no momento. 🤎</p>';
                     return;
                 }
-                produtos.forEach(p => {
+                produtos.forEach((p, i) => {
                     const card = document.createElement('div');
-                    card.className = 'bg-[#f7f2e7] border border-[#2b1a11]/5 rounded-3xl p-5 flex flex-col justify-between text-center transition hover:-translate-y-1 duration-200';
+                    card.className = 'card-hover reveal bg-[#f7f2e7] border border-[#2b1a11]/5 rounded-3xl p-5 flex flex-col justify-between text-center';
+                    card.style.animationDelay = `${i * 0.1}s`;
                     card.innerHTML = `
-                        <img src="${p.imagem_url || 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&q=80&w=400'}" alt="${p.nome}" class="w-full h-44 object-cover rounded-2xl mb-4 shadow-inner">
+                        <!-- IMAGEM RETRATO -->
+                        <img src="${p.imagem_url || 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&q=80&w=400&h=560'}" 
+                             alt="${p.nome}" 
+                             class="w-full h-64 object-cover rounded-2xl mb-4 shadow-inner">
                         <div>
                             <h4 class="font-serif font-bold text-lg mb-1 text-[#2b1a11]">${p.nome}</h4>
                             <p class="text-xs text-stone-500 leading-relaxed mb-4">${p.descricao || 'Feito artesanalmente com os melhores ingredientes.'}</p>
                         </div>
                         <div>
                             <span class="block text-2xl font-bold mb-4 text-[#2b1a11]">R$ ${Number(p.preco).toFixed(2).replace('.', ',')}</span>
-                            <button class="w-full py-3 bg-[#2b1a11] hover:bg-[#3d2518] text-white font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer transition btn-comprar">Quero esse</button>
+                            <button class="btn-bounce w-full py-3 bg-[#2b1a11] hover:bg-[#3d2518] text-white font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer transition btn-comprar">Quero esse</button>
                         </div>
                     `;
                     card.querySelector('.btn-comprar').addEventListener('click', () => {
@@ -169,6 +253,7 @@
                         window.location.href = `https://wa.me/${ADMIN_WHATSAPP}?text=${encodeURIComponent(txt)}`;
                     });
                     container.appendChild(card);
+                    observer.observe(card);
                 });
             } catch (e) {
                 container.innerHTML = '<p class="col-span-full text-center text-red-700 py-6">Erro ao carregar o catálogo.</p>';
@@ -196,9 +281,10 @@
                     return;
                 }
                 container.innerHTML = '';
-                avaliacoes.forEach(item => {
+                avaliacoes.forEach((item, i) => {
                     const card = document.createElement('div');
-                    card.className = 'bg-white p-6 rounded-3xl border border-stone-100 text-left shadow-xs flex flex-col justify-between';
+                    card.className = 'card-hover reveal bg-white p-6 rounded-3xl border border-stone-100 text-left shadow-xs flex flex-col justify-between';
+                    card.style.animationDelay = `${i * 0.1}s`;
                     card.innerHTML = `
                         <p class="text-sm italic text-stone-600 leading-relaxed mb-4">"${item.comentario}"</p>
                         <div class="flex items-center justify-between">
@@ -207,6 +293,7 @@
                         </div>
                     `;
                     container.appendChild(card);
+                    observer.observe(card);
                 });
             } catch (e) {
                 container.innerHTML = '<p class="col-span-full text-center text-red-700 py-6 text-xs">Erro ao carregar depoimentos.</p>';
