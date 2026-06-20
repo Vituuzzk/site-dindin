@@ -41,42 +41,64 @@ Site institucional e de vendas para a marca **Dindin Gourmet**, desenvolvido por
 ## 🗄️ Tabelas no Supabase
 
 ### `produtos`
-| Campo | Tipo | Descrição |
-|---|---|---|
-| id | uuid | Chave primária |
-| nome | text | Nome do sabor |
-| descricao | text | Descrição do produto |
-| preco | numeric | Preço em reais |
-| disponivel | boolean | Visível no cardápio? |
-| imagem_url | text | Link da foto |
-| created_at | timestamptz | Data de criação |
+
+```sql
+create table produtos (
+  id uuid default gen_random_uuid() primary key,
+  nome text not null,
+  descricao text,
+  preco numeric(10,2) not null,
+  disponivel boolean default true,
+  imagem_url text,
+  created_at timestamptz default now()
+);
+```
 
 ### `avaliacoes`
-| Campo | Tipo | Descrição |
-|---|---|---|
-| id | uuid | Chave primária |
-| nome | text | Nome do cliente |
-| estrelas | integer | Nota de 1 a 5 |
-| comentario | text | Comentário |
-| created_at | timestamptz | Data de criação |
+
+```sql
+create table avaliacoes (
+  id uuid default gen_random_uuid() primary key,
+  nome text not null,
+  estrelas integer not null check (estrelas >= 1 and estrelas <= 5),
+  comentario text not null,
+  created_at timestamptz default now()
+);
+```
 
 ### `caixa`
-| Campo | Tipo | Descrição |
-|---|---|---|
-| id | uuid | Chave primária |
-| descricao | text | Motivo da movimentação |
-| valor | numeric | Valor em reais |
-| tipo | text | `entrada` ou `saida` |
-| created_at | timestamptz | Data de criação |
+
+```sql
+create table caixa (
+  id uuid default gen_random_uuid() primary key,
+  descricao text not null,
+  valor numeric(10,2) not null,
+  tipo text not null check (tipo in ('entrada', 'saida')),
+  created_at timestamptz default now()
+);
+```
+
+### Políticas de acesso (RLS)
+
+```sql
+alter table produtos enable row level security;
+alter table avaliacoes enable row level security;
+alter table caixa enable row level security;
+
+create policy "acesso publico produtos" on produtos for all using (true) with check (true);
+create policy "acesso publico avaliacoes" on avaliacoes for all using (true) with check (true);
+create policy "acesso publico caixa" on caixa for all using (true) with check (true);
+```
 
 ---
 
 ## ⚙️ Como configurar
 
 1. Crie um projeto em [supabase.com](https://supabase.com)
-2. Rode o SQL de criação das tabelas no **SQL Editor**
+2. Rode o SQL acima no **SQL Editor**
 3. Copie a **URL** e a **Chave publicável** do projeto
 4. Substitua no `index.html` e `admin.html`:
+
 ```js
 const SUPABASE_URL = "https://SEU-PROJETO.supabase.co";
 const SUPABASE_KEY = "sua-chave-publica";
