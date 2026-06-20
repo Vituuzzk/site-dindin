@@ -6,168 +6,291 @@
     <title>Painel Admin | Dindin Gourmet</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50%       { transform: translateY(-8px); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%       { transform: translateX(-8px); }
+            40%       { transform: translateX(8px); }
+            60%       { transform: translateX(-6px); }
+            80%       { transform: translateX(6px); }
+        }
+        @keyframes pulse-ring {
+            0%   { box-shadow: 0 0 0 0 rgba(217,160,91,0.4); }
+            70%  { box-shadow: 0 0 0 12px rgba(217,160,91,0); }
+            100% { box-shadow: 0 0 0 0 rgba(217,160,91,0); }
+        }
+
+        .anim-fade-up   { animation: fadeInUp 0.6s ease both; }
+        .anim-fade-down { animation: fadeInDown 0.5s ease both; }
+        .anim-float     { animation: float 3s ease-in-out infinite; }
+        .anim-shake     { animation: shake 0.4s ease; }
+        .anim-pulse-ring { animation: pulse-ring 1.5s ease infinite; }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+
+        .btn-bounce {
+            transition: transform 0.15s cubic-bezier(.36,.07,.19,.97), box-shadow 0.15s ease;
+        }
+        .btn-bounce:hover  { transform: translateY(-3px) scale(1.03); box-shadow: 0 8px 20px rgba(0,0,0,0.12); }
+        .btn-bounce:active { transform: translateY(1px) scale(0.97); }
+
+        .card-anim {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .card-anim.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* TELA DE LOGIN */
+        #tela-login {
+            position: fixed; inset: 0; z-index: 9999;
+            background: #fcf9f2;
+            display: flex; align-items: center; justify-content: center;
+        }
+        #tela-login.saindo {
+            animation: fadeInUp 0.4s ease reverse both;
+        }
+    </style>
 </head>
 <body class="bg-[#fcf9f2] text-[#2b1a11] font-sans min-h-screen">
 
-    <header class="bg-[#2b1a11] text-[#fcf9f2] p-6 shadow-md flex justify-between items-center">
-        <div>
-            <h1 class="text-xl font-serif font-black tracking-tight">Painel de Controle Administrativo</h1>
-            <p class="text-[10px] text-[#d9a05b] uppercase tracking-widest font-bold mt-1">Gerenciamento Geral do Cardápio</p>
+    <!-- TELA DE LOGIN -->
+    <div id="tela-login">
+        <div class="text-center px-6 w-full max-w-sm anim-fade-up">
+            <div class="anim-float text-5xl mb-6">🍦</div>
+            <h1 class="text-2xl font-serif font-black text-[#2b1a11] mb-1 anim-fade-up delay-1">Área Restrita</h1>
+            <p class="text-xs text-stone-400 uppercase tracking-widest font-bold mb-8 anim-fade-up delay-2">Dindin Gourmet · Admin</p>
+
+            <div class="bg-[#f7f2e7] border border-[#2b1a11]/10 rounded-3xl p-6 shadow-sm anim-fade-up delay-3">
+                <label class="block text-xs font-bold uppercase tracking-wider mb-3 text-stone-500 text-left">Senha de acesso</label>
+                <input id="input-senha" type="password" placeholder="••••••••"
+                    class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b] text-center tracking-widest mb-4 transition"
+                    autofocus>
+                <p id="erro-senha" class="text-xs text-rose-500 font-bold mb-3 hidden">Senha incorreta. Tente novamente.</p>
+                <button id="btn-entrar" onclick="verificarSenha()"
+                    class="btn-bounce anim-pulse-ring w-full py-3 bg-[#2b1a11] text-white font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer transition">
+                    Entrar
+                </button>
+            </div>
         </div>
-        <button onclick="window.location.href='index.html'" class="px-4 py-2 bg-[#d9a05b] hover:bg-[#b88243] text-white font-bold rounded-xl transition cursor-pointer text-xs">
-            ← Ver Cardápio Público
-        </button>
-    </header>
+    </div>
 
-    <main class="max-w-6xl mx-auto p-6 space-y-8">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- CONTEÚDO ADMIN (oculto até login) -->
+    <div id="conteudo-admin" class="hidden">
 
-            <div class="lg:col-span-1 space-y-6">
-                <div class="bg-[#f7f2e7] border border-[#2b1a11]/10 rounded-3xl p-6 shadow-xs">
-                    <h2 id="form-titulo" class="text-lg font-serif font-bold mb-2">Cadastrar Novo Dindin</h2>
-                    <p class="text-xs text-stone-500 mb-6">Preencha as informações para atualizar seu cardápio em tempo real.</p>
-                    <form id="form-produto" class="space-y-4">
-                        <input type="hidden" id="prod-id">
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Nome do Sabor</label>
-                            <input type="text" id="prod-nome" required placeholder="Ex: Ninho com Nutella" class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b]">
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
+        <header class="bg-[#2b1a11] text-[#fcf9f2] p-6 shadow-md flex justify-between items-center anim-fade-down">
+            <div>
+                <h1 class="text-xl font-serif font-black tracking-tight">Painel de Controle Administrativo</h1>
+                <p class="text-[10px] text-[#d9a05b] uppercase tracking-widest font-bold mt-1">Gerenciamento Geral do Cardápio</p>
+            </div>
+            <button onclick="window.location.href='index.html'" class="btn-bounce px-4 py-2 bg-[#d9a05b] hover:bg-[#b88243] text-white font-bold rounded-xl transition cursor-pointer text-xs">
+                ← Ver Cardápio Público
+            </button>
+        </header>
+
+        <main class="max-w-6xl mx-auto p-6 space-y-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+                <div class="lg:col-span-1 space-y-6">
+                    <div class="card-anim bg-[#f7f2e7] border border-[#2b1a11]/10 rounded-3xl p-6 shadow-xs">
+                        <h2 id="form-titulo" class="text-lg font-serif font-bold mb-2">Cadastrar Novo Dindin</h2>
+                        <p class="text-xs text-stone-500 mb-6">Preencha as informações para atualizar seu cardápio em tempo real.</p>
+                        <form id="form-produto" class="space-y-4">
+                            <input type="hidden" id="prod-id">
                             <div>
-                                <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Preço (R$)</label>
-                                <input type="number" step="0.01" id="prod-preco" required placeholder="5.00" class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b]">
+                                <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Nome do Sabor</label>
+                                <input type="text" id="prod-nome" required placeholder="Ex: Ninho com Morango" class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b] transition">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Preço (R$)</label>
+                                    <input type="number" step="0.01" id="prod-preco" required placeholder="5.00" class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b] transition">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Disponível?</label>
+                                    <select id="prod-disponivel" class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b] transition">
+                                        <option value="true">Sim (Visível)</option>
+                                        <option value="false">Não (Ocultar)</option>
+                                    </select>
+                                </div>
                             </div>
                             <div>
-                                <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Disponível?</label>
-                                <select id="prod-disponivel" class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b]">
-                                    <option value="true">Sim (Visível)</option>
-                                    <option value="false">Não (Ocultar)</option>
+                                <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Descrição / Ingredientes</label>
+                                <textarea id="prod-descricao" rows="3" placeholder="Ex: Base super cremosa de leite ninho com recheio de morango." class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b] resize-none transition"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Link da Imagem (URL)</label>
+                                <input type="url" id="prod-imagem" placeholder="https://linkdafoto.com/imagem.jpg" class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b] transition">
+                                <p class="text-[10px] text-stone-500 mt-1">Dica: Suba fotos em <a href="https://imgbb.com/" target="_blank" class="text-[#d9a05b] underline">ImgBB</a> e cole o link aqui.</p>
+                            </div>
+                            <div class="flex gap-2 pt-2">
+                                <button type="submit" id="btn-salvar" class="btn-bounce flex-1 py-3 text-white font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer transition shadow-md bg-[#2b1a11] hover:bg-[#3d2518]">Salvar Sabor</button>
+                                <button type="button" id="btn-cancelar" class="hidden btn-bounce py-3 px-4 text-stone-600 font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer transition bg-stone-200 hover:bg-stone-300">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2 space-y-8">
+                    <div class="card-anim bg-white border border-[#2b1a11]/5 rounded-3xl p-6 shadow-xs" style="transition-delay: 0.1s">
+                        <h3 class="text-lg font-serif font-bold mb-4 flex justify-between items-center">
+                            <span>🍦 Sabores no Cardápio</span>
+                            <span id="total-produtos" class="text-xs bg-[#f7f2e7] text-[#2b1a11] px-3 py-1 rounded-full font-sans font-bold">0</span>
+                        </h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm border-collapse">
+                                <thead>
+                                    <tr class="border-b border-stone-200 text-stone-500 text-xs uppercase tracking-wider">
+                                        <th class="pb-3 font-bold">Foto</th>
+                                        <th class="pb-3 font-bold">Sabor</th>
+                                        <th class="pb-3 font-bold">Preço</th>
+                                        <th class="pb-3 font-bold">Status</th>
+                                        <th class="pb-3 text-right font-bold">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabela-produtos" class="divide-y divide-stone-100">
+                                    <tr><td colspan="5" class="py-6 text-center text-stone-400 animate-pulse">Buscando dindins...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card-anim bg-white border border-[#2b1a11]/5 rounded-3xl p-6 shadow-xs" style="transition-delay: 0.2s">
+                        <h3 class="text-lg font-serif font-bold mb-4 flex justify-between items-center">
+                            <span>💬 Avaliações dos Clientes</span>
+                            <span id="total-comentarios" class="text-xs bg-[#f7f2e7] text-[#2b1a11] px-3 py-1 rounded-full font-sans font-bold">0</span>
+                        </h3>
+                        <div class="space-y-4" id="lista-admin-avaliacoes">
+                            <p class="text-center text-stone-400 py-4 animate-pulse text-sm">Carregando comentários...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="border-stone-200 my-8">
+
+            <div class="card-anim bg-[#f7f2e7] border border-[#2b1a11]/10 rounded-3xl p-6 shadow-xs" style="transition-delay: 0.3s">
+                <h3 class="text-xl font-serif font-bold text-[#2b1a11] mb-2 flex items-center gap-2">💵 Controle de Caixa e Finanças</h3>
+                <p class="text-xs text-stone-500 mb-6">Acompanhe as vendas, custos de produção e lucro acumulado.</p>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-white p-4 rounded-2xl border border-stone-200 text-left">
+                        <span class="text-[10px] text-stone-400 font-bold uppercase tracking-wider">Total Entradas</span>
+                        <h4 id="caixa-entradas" class="text-xl font-bold text-emerald-700 mt-1">R$ 0,00</h4>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-stone-200 text-left">
+                        <span class="text-[10px] text-stone-400 font-bold uppercase tracking-wider">Total Saídas</span>
+                        <h4 id="caixa-saidas" class="text-xl font-bold text-rose-700 mt-1">R$ 0,00</h4>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-stone-200 text-left md:col-span-2">
+                        <span class="text-[10px] text-stone-400 font-bold uppercase tracking-wider">Saldo em Caixa</span>
+                        <h4 id="caixa-saldo" class="text-xl font-black text-[#2b1a11] mt-1">R$ 0,00</h4>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                    <form id="form-caixa" class="bg-white p-4 rounded-2xl border border-stone-200 space-y-4 text-left">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-stone-700">Nova Movimentação</h4>
+                        <div>
+                            <label class="block text-[11px] font-bold text-stone-600 mb-1">Descrição / Motivo</label>
+                            <input type="text" id="caixa-descricao" required placeholder="Ex: Venda de 5 dindins" class="w-full p-2.5 border border-[#d1c7bd] rounded-xl bg-stone-50 text-xs outline-none focus:border-[#d9a05b] transition">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[11px] font-bold text-stone-600 mb-1">Valor (R$)</label>
+                                <input type="number" step="0.01" id="caixa-valor" required placeholder="0.00" class="w-full p-2.5 border border-[#d1c7bd] rounded-xl bg-stone-50 text-xs outline-none focus:border-[#d9a05b] transition">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-stone-600 mb-1">Tipo</label>
+                                <select id="caixa-tipo" class="w-full p-2.5 border border-[#d1c7bd] rounded-xl bg-stone-50 text-xs outline-none focus:border-[#d9a05b] transition">
+                                    <option value="entrada">➕ Entrada (Venda)</option>
+                                    <option value="saida">➖ Saída (Gasto)</option>
                                 </select>
                             </div>
                         </div>
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Descrição / Ingredientes</label>
-                            <textarea id="prod-descricao" rows="3" placeholder="Ex: Base super cremosa de leite ninho com recheio legítimo de Nutella." class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b] resize-none"></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-stone-600">Link da Imagem (URL)</label>
-                            <input type="url" id="prod-imagem" placeholder="https://linkdafoto.com/imagem.jpg" class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-sm focus:border-[#d9a05b]">
-                            <p class="text-[10px] text-stone-500 mt-1">Dica: Suba fotos em <a href="https://imgbb.com/" target="_blank" class="text-[#d9a05b] underline">ImgBB</a> e cole o link aqui.</p>
-                        </div>
-                        <div class="flex gap-2 pt-2">
-                            <button type="submit" id="btn-salvar" class="flex-1 py-3 text-white font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer transition shadow-md bg-[#2b1a11] hover:bg-[#3d2518]">Salvar Sabor</button>
-                            <button type="button" id="btn-cancelar" class="hidden py-3 px-4 text-stone-600 font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer transition bg-stone-200 hover:bg-stone-300">Cancelar</button>
-                        </div>
+                        <button type="submit" class="btn-bounce w-full py-2.5 bg-[#2b1a11] hover:bg-stone-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition cursor-pointer">Lançar no Caixa</button>
                     </form>
-                </div>
-            </div>
-
-            <div class="lg:col-span-2 space-y-8">
-                <div class="bg-white border border-[#2b1a11]/5 rounded-3xl p-6 shadow-xs">
-                    <h3 class="text-lg font-serif font-bold mb-4 flex justify-between items-center">
-                        <span>🍦 Sabores no Cardápio</span>
-                        <span id="total-produtos" class="text-xs bg-[#f7f2e7] text-[#2b1a11] px-3 py-1 rounded-full font-sans font-bold">0</span>
-                    </h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm border-collapse">
-                            <thead>
-                                <tr class="border-b border-stone-200 text-stone-500 text-xs uppercase tracking-wider">
-                                    <th class="pb-3 font-bold">Foto</th>
-                                    <th class="pb-3 font-bold">Sabor</th>
-                                    <th class="pb-3 font-bold">Preço</th>
-                                    <th class="pb-3 font-bold">Status</th>
-                                    <th class="pb-3 text-right font-bold">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabela-produtos" class="divide-y divide-stone-100">
-                                <tr><td colspan="5" class="py-6 text-center text-stone-400 animate-pulse">Buscando dindins...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="bg-white border border-[#2b1a11]/5 rounded-3xl p-6 shadow-xs">
-                    <h3 class="text-lg font-serif font-bold mb-4 flex justify-between items-center">
-                        <span>💬 Avaliações dos Clientes</span>
-                        <span id="total-comentarios" class="text-xs bg-[#f7f2e7] text-[#2b1a11] px-3 py-1 rounded-full font-sans font-bold">0</span>
-                    </h3>
-                    <div class="space-y-4" id="lista-admin-avaliacoes">
-                        <p class="text-center text-stone-400 py-4 animate-pulse text-sm">Carregando comentários...</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <hr class="border-stone-200 my-8">
-
-        <div class="bg-[#f7f2e7] border border-[#2b1a11]/10 rounded-3xl p-6 shadow-xs">
-            <h3 class="text-xl font-serif font-bold text-[#2b1a11] mb-2 flex items-center gap-2">💵 Controle de Caixa e Finanças</h3>
-            <p class="text-xs text-stone-500 mb-6">Acompanhe as vendas, custos de produção e lucro acumulado.</p>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                <div class="bg-white p-4 rounded-2xl border border-stone-200 text-left">
-                    <span class="text-[10px] text-stone-400 font-bold uppercase tracking-wider">Total Entradas</span>
-                    <h4 id="caixa-entradas" class="text-xl font-bold text-emerald-700 mt-1">R$ 0,00</h4>
-                </div>
-                <div class="bg-white p-4 rounded-2xl border border-stone-200 text-left">
-                    <span class="text-[10px] text-stone-400 font-bold uppercase tracking-wider">Total Saídas</span>
-                    <h4 id="caixa-saidas" class="text-xl font-bold text-rose-700 mt-1">R$ 0,00</h4>
-                </div>
-                <div class="bg-white p-4 rounded-2xl border border-stone-200 text-left md:col-span-2">
-                    <span class="text-[10px] text-stone-400 font-bold uppercase tracking-wider">Saldo em Caixa</span>
-                    <h4 id="caixa-saldo" class="text-xl font-black text-[#2b1a11] mt-1">R$ 0,00</h4>
-                </div>
-            </div>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-                <form id="form-caixa" class="bg-white p-4 rounded-2xl border border-stone-200 space-y-4 text-left">
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-stone-700">Nova Movimentação</h4>
-                    <div>
-                        <label class="block text-[11px] font-bold text-stone-600 mb-1">Descrição / Motivo</label>
-                        <input type="text" id="caixa-descricao" required placeholder="Ex: Venda de 5 dindins" class="w-full p-2.5 border border-[#d1c7bd] rounded-xl bg-stone-50 text-xs outline-none focus:border-[#d9a05b]">
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label class="block text-[11px] font-bold text-stone-600 mb-1">Valor (R$)</label>
-                            <input type="number" step="0.01" id="caixa-valor" required placeholder="0.00" class="w-full p-2.5 border border-[#d1c7bd] rounded-xl bg-stone-50 text-xs outline-none focus:border-[#d9a05b]">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-bold text-stone-600 mb-1">Tipo</label>
-                            <select id="caixa-tipo" class="w-full p-2.5 border border-[#d1c7bd] rounded-xl bg-stone-50 text-xs outline-none focus:border-[#d9a05b]">
-                                <option value="entrada">➕ Entrada (Venda)</option>
-                                <option value="saida">➖ Saída (Gasto)</option>
-                            </select>
+                    <div class="lg:col-span-2 bg-white p-4 rounded-2xl border border-stone-200 text-left h-64 flex flex-col">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-stone-700 mb-3">Histórico Recente</h4>
+                        <div id="historico-caixa" class="overflow-y-auto flex-1 space-y-2 pr-1 text-xs divide-y divide-stone-100">
+                            <p class="text-center text-stone-400 py-6 animate-pulse">Carregando movimentações...</p>
                         </div>
                     </div>
-                    <button type="submit" class="w-full py-2.5 bg-[#2b1a11] hover:bg-stone-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition cursor-pointer">Lançar no Caixa</button>
-                </form>
-                <div class="lg:col-span-2 bg-white p-4 rounded-2xl border border-stone-200 text-left h-64 flex flex-col">
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-stone-700 mb-3">Histórico Recente</h4>
-                    <div id="historico-caixa" class="overflow-y-auto flex-1 space-y-2 pr-1 text-xs divide-y divide-stone-100">
-                        <p class="text-center text-stone-400 py-6 animate-pulse">Carregando movimentações...</p>
-                    </div>
                 </div>
             </div>
-        </div>
-    </main>
+        </main>
+    </div>
 
     <script type="module">
+        // ── SENHA ──────────────────────────────────────────────
+        const SENHA_CORRETA = "monica";
+
+        function verificarSenha() {
+            const input = document.getElementById('input-senha');
+            const erro  = document.getElementById('erro-senha');
+            if (input.value === SENHA_CORRETA) {
+                const tela = document.getElementById('tela-login');
+                tela.classList.add('saindo');
+                setTimeout(() => {
+                    tela.style.display = 'none';
+                    const admin = document.getElementById('conteudo-admin');
+                    admin.classList.remove('hidden');
+                    // Acionar animações dos cards após revelar
+                    setTimeout(() => {
+                        document.querySelectorAll('.card-anim').forEach(el => el.classList.add('visible'));
+                    }, 100);
+                }, 400);
+            } else {
+                erro.classList.remove('hidden');
+                input.classList.add('anim-shake', 'border-rose-400');
+                setTimeout(() => input.classList.remove('anim-shake', 'border-rose-400'), 500);
+                input.value = '';
+                input.focus();
+            }
+        }
+
+        // Permitir Enter para confirmar senha
+        document.getElementById('input-senha').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') verificarSenha();
+        });
+
+        window.verificarSenha = verificarSenha;
+
+        // ── SUPABASE ───────────────────────────────────────────
         const SUPABASE_URL = "https://chssifwpqrehztdyfssl.supabase.co";
         const SUPABASE_KEY = "sb_publishable_fRdHLOKe1zxnVbUgdqiB1g_i3LPqDSE";
         const { createClient } = supabase;
         const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        const formProduto    = document.getElementById('form-produto');
-        const prodId         = document.getElementById('prod-id');
-        const prodNome       = document.getElementById('prod-nome');
-        const prodPreco      = document.getElementById('prod-preco');
-        const prodDisponivel = document.getElementById('prod-disponivel');
-        const prodDescricao  = document.getElementById('prod-descricao');
-        const prodImagem     = document.getElementById('prod-imagem');
-        const formTitulo     = document.getElementById('form-titulo');
-        const btnSalvar      = document.getElementById('btn-salvar');
-        const btnCancelar    = document.getElementById('btn-cancelar');
-        const tabelaProdutos = document.getElementById('tabela-produtos');
+        const formProduto     = document.getElementById('form-produto');
+        const prodId          = document.getElementById('prod-id');
+        const prodNome        = document.getElementById('prod-nome');
+        const prodPreco       = document.getElementById('prod-preco');
+        const prodDisponivel  = document.getElementById('prod-disponivel');
+        const prodDescricao   = document.getElementById('prod-descricao');
+        const prodImagem      = document.getElementById('prod-imagem');
+        const formTitulo      = document.getElementById('form-titulo');
+        const btnSalvar       = document.getElementById('btn-salvar');
+        const btnCancelar     = document.getElementById('btn-cancelar');
+        const tabelaProdutos  = document.getElementById('tabela-produtos');
         const listaAvaliacoes = document.getElementById('lista-admin-avaliacoes');
-        const historicoCaixa = document.getElementById('historico-caixa');
+        const historicoCaixa  = document.getElementById('historico-caixa');
 
         async function renderizarProdutos() {
             try {
@@ -179,22 +302,29 @@
                     tabelaProdutos.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-stone-400 text-xs">Nenhum sabor cadastrado ainda.</td></tr>`;
                     return;
                 }
-                produtos.forEach(p => {
+                produtos.forEach((p, i) => {
                     const tr = document.createElement('tr');
                     tr.className = 'hover:bg-stone-50/50 transition-colors';
+                    tr.style.opacity = '0';
+                    tr.style.transform = 'translateY(10px)';
+                    tr.style.transition = `opacity 0.3s ease ${i * 0.05}s, transform 0.3s ease ${i * 0.05}s`;
                     tr.innerHTML = `
                         <td class="py-3"><img src="${p.imagem_url || 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&q=80&w=100'}" class="w-10 h-10 object-cover rounded-xl border border-stone-200"></td>
                         <td class="py-3 font-bold text-stone-800 text-xs">${p.nome}</td>
                         <td class="py-3 text-xs">R$ ${Number(p.preco).toFixed(2).replace('.', ',')}</td>
                         <td class="py-3 text-xs"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${p.disponivel ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">${p.disponivel ? 'Ativo' : 'Oculto'}</span></td>
                         <td class="py-3 text-right space-x-1 text-xs">
-                            <button class="btn-editar bg-[#d9a05b] text-white px-2.5 py-1 rounded-lg font-medium cursor-pointer hover:bg-[#b88243] transition">Editar</button>
-                            <button class="btn-deletar bg-rose-600 text-white px-2.5 py-1 rounded-lg font-medium cursor-pointer hover:bg-rose-700 transition">Excluir</button>
+                            <button class="btn-editar btn-bounce bg-[#d9a05b] text-white px-2.5 py-1 rounded-lg font-medium cursor-pointer hover:bg-[#b88243] transition">Editar</button>
+                            <button class="btn-deletar btn-bounce bg-rose-600 text-white px-2.5 py-1 rounded-lg font-medium cursor-pointer hover:bg-rose-700 transition">Excluir</button>
                         </td>
                     `;
                     tr.querySelector('.btn-editar').addEventListener('click', () => prepararEdicao(p));
                     tr.querySelector('.btn-deletar').addEventListener('click', () => deletarProduto(p.id, p.nome));
                     tabelaProdutos.appendChild(tr);
+                    requestAnimationFrame(() => {
+                        tr.style.opacity = '1';
+                        tr.style.transform = 'translateY(0)';
+                    });
                 });
             } catch (err) { console.error('Erro ao listar produtos:', err); }
         }
@@ -265,9 +395,12 @@
                     listaAvaliacoes.innerHTML = '<p class="text-center text-stone-400 py-4 text-xs">Nenhum comentário publicado.</p>';
                     return;
                 }
-                avaliacoes.forEach(item => {
+                avaliacoes.forEach((item, i) => {
                     const div = document.createElement('div');
                     div.className = 'bg-[#f7f2e7]/40 border border-stone-200/60 p-4 rounded-2xl flex justify-between items-start gap-4';
+                    div.style.opacity = '0';
+                    div.style.transform = 'translateX(-10px)';
+                    div.style.transition = `opacity 0.3s ease ${i * 0.06}s, transform 0.3s ease ${i * 0.06}s`;
                     div.innerHTML = `
                         <div class="flex-1">
                             <div class="flex items-center gap-2 mb-1">
@@ -277,7 +410,7 @@
                             <p class="text-xs text-stone-600 italic">"${item.comentario}"</p>
                             <span class="text-[10px] text-stone-400 mt-1 block">${new Date(item.created_at).toLocaleDateString('pt-BR')}</span>
                         </div>
-                        <button class="btn-del-aval bg-rose-100 text-rose-700 px-2.5 py-1 rounded-lg text-[10px] font-bold cursor-pointer hover:bg-rose-200 transition shrink-0">Excluir</button>
+                        <button class="btn-del-aval btn-bounce bg-rose-100 text-rose-700 px-2.5 py-1 rounded-lg text-[10px] font-bold cursor-pointer hover:bg-rose-200 transition shrink-0">Excluir</button>
                     `;
                     div.querySelector('.btn-del-aval').addEventListener('click', async () => {
                         if (confirm('Deseja excluir esta avaliação?')) {
@@ -286,6 +419,10 @@
                         }
                     });
                     listaAvaliacoes.appendChild(div);
+                    requestAnimationFrame(() => {
+                        div.style.opacity = '1';
+                        div.style.transform = 'translateX(0)';
+                    });
                 });
             } catch (err) { console.error('Erro ao carregar avaliações:', err); }
         }
@@ -304,9 +441,11 @@
                 elSaldo.className = `text-xl font-black mt-1 ${saldo >= 0 ? 'text-emerald-700' : 'text-rose-700'}`;
                 historicoCaixa.innerHTML = '';
                 if (movs.length === 0) { historicoCaixa.innerHTML = '<p class="text-center text-stone-400 py-6">Nenhuma movimentação ainda.</p>'; return; }
-                movs.forEach(m => {
+                movs.forEach((m, i) => {
                     const div = document.createElement('div');
                     div.className = 'flex justify-between items-center py-2';
+                    div.style.opacity = '0';
+                    div.style.transition = `opacity 0.25s ease ${i * 0.04}s`;
                     div.innerHTML = `
                         <div>
                             <span class="font-medium text-stone-700">${m.descricao}</span>
@@ -314,7 +453,7 @@
                         </div>
                         <div class="flex items-center gap-2 shrink-0">
                             <span class="font-bold ${m.tipo === 'entrada' ? 'text-emerald-700' : 'text-rose-700'}">${m.tipo === 'entrada' ? '+' : '-'} R$ ${Number(m.valor).toFixed(2).replace('.', ',')}</span>
-                            <button class="btn-del-mov text-[10px] text-rose-400 hover:text-rose-600 cursor-pointer font-bold">✕</button>
+                            <button class="btn-del-mov text-[10px] text-rose-400 hover:text-rose-600 cursor-pointer font-bold transition">✕</button>
                         </div>
                     `;
                     div.querySelector('.btn-del-mov').addEventListener('click', async () => {
@@ -324,6 +463,7 @@
                         }
                     });
                     historicoCaixa.appendChild(div);
+                    requestAnimationFrame(() => div.style.opacity = '1');
                 });
             } catch (err) { console.error('Erro ao carregar caixa:', err); }
         }
@@ -343,9 +483,16 @@
             } catch (err) { alert('Erro ao lançar movimentação.'); }
         });
 
-        renderizarProdutos();
-        renderizarAvaliacoes();
-        renderizarCaixa();
+        // Só carrega dados após login (chamado quando cards ficam visíveis)
+        const observer = new MutationObserver(() => {
+            if (!document.getElementById('conteudo-admin').classList.contains('hidden')) {
+                renderizarProdutos();
+                renderizarAvaliacoes();
+                renderizarCaixa();
+                observer.disconnect();
+            }
+        });
+        observer.observe(document.getElementById('conteudo-admin'), { attributes: true });
     </script>
 </body>
 </html>
