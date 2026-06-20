@@ -9,8 +9,9 @@ Site institucional e de vendas para a marca **Dindin Gourmet**, desenvolvido por
 - Cardápio dinâmico carregado do banco de dados em tempo real
 - Pedidos diretos via **WhatsApp** com mensagem automática
 - Sistema de **avaliações com estrelas** dos clientes
-- **Painel administrativo** completo para gerenciar o negócio
+- **Painel administrativo** protegido por senha
 - **Controle de caixa** com entradas, saídas e saldo
+- Animações e transições em toda a interface
 - Design responsivo para mobile e desktop
 
 ---
@@ -32,7 +33,7 @@ Site institucional e de vendas para a marca **Dindin Gourmet**, desenvolvido por
 ```
 /
 ├── index.html       # Página pública do cardápio
-├── admin.html       # Painel administrativo
+├── admin.html       # Painel administrativo (protegido por senha)
 └── README.md        # Este arquivo
 ```
 
@@ -102,6 +103,12 @@ create policy "acesso publico caixa" on caixa for all using (true) with check (t
 ```js
 const SUPABASE_URL = "https://SEU-PROJETO.supabase.co";
 const SUPABASE_KEY = "sua-chave-publica";
+```
+
+5. Para alterar a senha do painel admin, edite em `admin.html`:
+
+```js
+const SENHA_CORRETA = "sua-senha-aqui";
 ```
 
 ---
