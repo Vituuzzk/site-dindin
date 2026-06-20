@@ -3,128 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Administrativo | Dindin Gourmet</title>
+    <title>Painel Administrativo - Teste</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        body { background-color: #fcf9f2; color: #2b1a11; font-family: sans-serif; }
-    </style>
 </head>
-<body class="min-h-screen p-4 flex flex-col items-center">
+<body class="p-8 bg-stone-100">
 
-<!-- MODAL DE PROTEÇÃO -->
-<div id="modal-autenticacao" class="fixed inset-0 bg-[#1e120c]/90 backdrop-blur-md z-[2000] flex items-center justify-center p-4">
-    <div class="bg-[#fcf9f2] w-full max-w-xs rounded-3xl p-6 text-center shadow-2xl">
-        <span class="text-4xl">🔐</span>
-        <h4 class="font-bold text-lg mt-3 mb-1">Painel Protegido</h4>
-        <p class="text-xs text-stone-500 mb-6">Insira a chave mestra</p>
+    <div class="max-w-md mx-auto bg-white p-6 rounded-2xl shadow-lg">
+        <h1 class="text-2xl font-bold mb-4">Painel de Teste</h1>
+        <p class="mb-6">Se você está vendo isso, a página carregou!</p>
         
-        <input type="password" id="campo-chave-admin" placeholder="••••••••" 
-               class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-center text-sm mb-2">
-        
-        <div class="mb-4 text-right">
-            <button id="btn-esqueceu-senha" class="text-[11px] text-stone-400 underline cursor-pointer">Esqueceu a senha?</button>
-        </div>
-        
-        <div class="flex gap-2">
-            <button id="btn-entrar-painel" class="flex-1 py-3 bg-[#2b1a11] text-white text-xs font-bold uppercase rounded-xl cursor-pointer">Entrar</button>
-            <button id="btn-voltar-site" class="py-3 px-4 bg-stone-200 text-stone-600 text-xs font-bold uppercase rounded-xl cursor-pointer">Voltar</button>
-        </div>
-    </div>
-</div>
-
-<!-- CONTEÚDO DO PAINEL -->
-<main id="conteudo-painel" class="hidden w-full max-w-4xl space-y-8 mb-12">
-    <div class="flex justify-between items-center bg-white border rounded-3xl p-6 shadow-xs">
-        <h2 class="text-xl font-bold">Gerenciamento</h2>
-        <button id="btn-logout" class="py-2 px-4 bg-red-800 text-white text-xs font-bold rounded-xl">Sair</button>
+        <button onclick="window.location.href='index.html'" 
+                class="w-full py-3 bg-stone-800 text-white font-bold rounded-xl">
+            Voltar ao Cardápio
+        </button>
     </div>
 
-    <!-- CADASTRO -->
-    <section class="bg-[#f7f2e7] border rounded-3xl p-6">
-        <h3 class="text-lg font-bold mb-4">✨ Adicionar Novo Dindin</h3>
-        <form id="form-novo-sabor" class="grid gap-4">
-            <input type="text" id="add-nome" required placeholder="Nome do Sabor" class="w-full p-3 border rounded-xl">
-            <input type="number" id="add-preco" required step="0.01" placeholder="Preço" class="w-full p-3 border rounded-xl">
-            <button type="submit" id="btn-submit-sabor" class="py-3 bg-[#2b1a11] text-white font-bold rounded-xl">Salvar no Banco</button>
-        </form>
-    </section>
-
-    <!-- LISTA -->
-    <section class="bg-white border rounded-3xl p-6">
-        <h3 class="text-lg font-bold mb-4">🍦 Sabores</h3>
-        <div id="tabela-admin-produtos" class="space-y-2"></div>
-    </section>
-
-    <div class="flex justify-center">
-        <button id="btn-voltar-rodape" class="w-full py-4 bg-stone-200 text-[#2b1a11] font-bold rounded-2xl">← Voltar ao Cardápio</button>
-    </div>
-</main>
-
-<script>
-    const supabase = supabase.createClient("https://chssifwpqrehztdyfssl.supabase.co", "sb_publishable_fRdHLOKe1zxnVbUgdqiB1g_i3LPqDSE");
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const modal = document.getElementById('modal-autenticacao');
-        const painel = document.getElementById('conteudo-painel');
-        const campoChave = document.getElementById('campo-chave-admin');
-
-        // FUNÇÕES BÁSICAS
-        function irParaCardapio() { window.location.href = 'index.html'; }
-
-        // LOGIN
-        document.getElementById('btn-entrar-painel').onclick = () => {
-            if (campoChave.value.trim().toLowerCase() === 'admin') {
-                modal.style.display = 'none';
-                painel.classList.remove('hidden');
-                listarProdutos();
-            } else {
-                alert('Código inválido!');
-            }
-        };
-
-        document.getElementById('btn-esqueceu-senha').onclick = () => alert('Pergunta pra Mônica! 😀😃');
-        document.getElementById('btn-voltar-site').onclick = irParaCardapio;
-        document.getElementById('btn-logout').onclick = irParaCardapio;
-        document.getElementById('btn-voltar-rodape').onclick = irParaCardapio;
-
-        // LISTAR
-        async function listarProdutos() {
-            const container = document.getElementById('tabela-admin-produtos');
-            const { data } = await supabase.from('produtos').select('*');
-            container.innerHTML = '';
-            data.forEach(p => {
-                const div = document.createElement('div');
-                div.className = "flex justify-between p-3 border-b text-sm";
-                div.innerHTML = `<span>${p.nome}</span> <button class="text-red-600 font-bold" onclick="excluir(${p.id})">Excluir</button>`;
-                container.appendChild(div);
-            });
-        }
-
-        // EXCLUIR (Global para funcionar no onclick)
-        window.excluir = async (id) => {
-            await supabase.from('produtos').delete().eq('id', id);
-            listarProdutos();
-        };
-
-        // SALVAR
-        document.getElementById('form-novo-sabor').onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('btn-submit-sabor');
-            btn.innerText = "Salvando...";
-            
-            await supabase.from('produtos').insert([{
-                nome: document.getElementById('add-nome').value,
-                preco: document.getElementById('add-preco').value,
-                disponivel: true
-            }]);
-            
-            alert('Sucesso!');
-            btn.innerText = "Salvar no Banco";
-            document.getElementById('form-novo-sabor').reset();
-            listarProdutos();
-        };
-    });
-</script>
 </body>
 </html>
