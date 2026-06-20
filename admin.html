@@ -190,11 +190,11 @@
     </main>
 
     <script type="module">
-        // CONFIGURAÇÃO REAL DO SEU SUPABASE
-        const SUPABASE_URL = "https://chssifwpqrehztdyfssl.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_fRdHLOKe1zxnVbUgdqiB1g_i3LPqDSE"; 
+        // CONFIGURAÇÃO DO SEU SUPABASE
+        const SUPABASE_URL = "https://LHD9lPGKfZ6u9WLaAlNio9lKDTaaRQla9XcLr4iV.supabase.co";
+        const SUPABASE_KEY = "sKtR5OHOmgq2BDUWEifW3XG1PB9V0QthUaYI1lok"; 
 
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // ELEMENTOS DO DOM (CARDÁPIO)
         const formProduto = document.getElementById('form-produto');
@@ -333,85 +333,100 @@
 
                 avaliacoes.forEach(item => {
                     const div = document.createElement('div');
-                    div.className = 'bg-[#f7f2e7]/40 border border-stone-200/60 p-4 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4';
+                    div.className = 'bg-[#f7f2e7]/40 border border-stone-200/60 p-4 rounded-2xl flex flex-col md:flex-row md:items-start gap-4';
+                    
+                    const data = new Date(item.criado_em).toLocaleDateString('pt-BR');
+                    const hora = new Date(item.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                    
                     div.innerHTML = `
-                        <div class="flex-1 text-left">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="font-bold text-sm text-stone-800">${item.nome}</span>
-                                <span class="text-amber-500 text-xs">${'★'.repeat(item.estrelas)}</span>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start mb-1">
+                                <div>
+                                    <span class="font-bold text-xs text-stone-800">${item.nome_cliente || 'Anônimo'}</span>
+                                    <span class="text-[10px] text-stone-400 ml-2">${data} às ${hora}</span>
+                                </div>
+                                <span class="text-yellow-500 text-xs font-bold">${'★'.repeat(item.nota || 5)}</span>
                             </div>
-                            <p class="text-xs text-stone-600 italic">"${item.comentario}"</p>
+                            <p class="text-xs text-stone-600 mt-1">${item.comentario}</p>
+                            ${item.produto_nome ? `<span class="text-[10px] text-[#d9a05b] font-medium mt-2 inline-block">Sabor: ${item.produto_nome}</span>` : ''}
                         </div>
-                        <button class="btn-apagar-coment bg-stone-200 hover:bg-rose-100 hover:text-rose-700 text-stone-600 px-3 py-1.5 rounded-lg font-bold text-xs cursor-pointer transition">Remover</button>
+                        <button class="btn-excluir-avaliacao text-[10px] text-rose-600 hover:text-rose-800 font-bold uppercase tracking-wider self-end md:self-center cursor-pointer transition">
+                            Excluir
+                        </button>
                     `;
-                    div.querySelector('.btn-apagar-coment').addEventListener('click', async () => {
-                        if (confirm(`Remover comentário de "${item.nome}"?`)) {
-                            await supabase.from('avaliacoes').delete().eq('id', item.id);
-                            renderizarAvaliacoes();
+                    
+                    div.querySelector('.btn-excluir-avaliacao').addEventListener('click', async () => {
+                        if (confirm('Excluir esta avaliação permanentemente?')) {
+                            try {
+                                const { error } = await supabase.from('avaliacoes').delete().eq('id', item.id);
+                                if (error) throw error;
+                                renderizarAvaliacoes();
+                            } catch (err) { alert('Erro ao excluir avaliação.'); }
                         }
                     });
+                    
                     listaAvaliacoes.appendChild(div);
                 });
-            } catch (err) { console.error(err); }
+            } catch (err) { 
+                console.error('Erro ao carregar avaliações:', err);
+                listaAvaliacoes.innerHTML = '<p class="text-center text-rose-400 py-4 text-xs">Erro ao carregar comentários.</p>';
+            }
         }
 
-        // FUNÇÃO: ATUALIZAR FINANCEIRO / FLUXO DE CAIXA
-        async function renderizarCaixa() {
+        // FUNÇÕES DO CAIXA
+        async function atualizarResumoCaixa() {
             try {
-                const { data: transacoes, error } = await supabase.from('fluxo_caixa').select('*').order('criado_em', { ascending: false });
+                const { data, error } = await supabase.from('caixa').select('tipo, valor');
                 if (error) throw error;
-
-                historicoCaixa.innerHTML = '';
-                let totalEntradas = 0;
-                let totalSaidas = 0;
-
-                if (transacoes.length === 0) {
-                    historicoCaixa.innerHTML = '<p class="text-center text-stone-400 py-8">Nenhum lançamento no caixa.</p>';
-                } else {
-                    transacoes.forEach(t => {
-                        const valorNum = parseFloat(t.valor);
-                        if (t.tipo === 'entrada') totalEntradas += valorNum;
-                        else totalSaidas += valorNum;
-
-                        const item = document.createElement('div');
-                        item.className = 'flex justify-between items-center py-2 border-b border-stone-50 gap-2';
-                        item.innerHTML = `
-                            <div>
-                                <span class="font-semibold text-stone-800 block">${t.descricao}</span>
-                                <span class="text-[10px] text-stone-400">${new Date(t.criado_em).toLocaleDateString('pt-BR')}</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="font-bold ${t.tipo === 'entrada' ? 'text-emerald-700' : 'text-rose-700'}">
-                                    ${t.tipo === 'entrada' ? '+' : '-'} R$ ${valorNum.toFixed(2).replace('.', ',')}
-                                </span>
-                                <button class="btn-deletar-transacao text-stone-300 hover:text-rose-600 font-bold px-1 text-sm cursor-pointer transition">×</button>
-                            </div>
-                        `;
-
-                        item.querySelector('.btn-deletar-transacao').addEventListener('click', async () => {
-                            if (confirm(`Excluir o lançamento "${t.descricao}"?`)) {
-                                await supabase.from('fluxo_caixa').delete().eq('id', t.id);
-                                renderizarCaixa();
-                            }
-                        });
-
-                        historicoCaixa.appendChild(item);
-                    });
-                }
-
-                // Renderiza Totais
-                const saldo = totalEntradas - totalSaidas;
-                document.getElementById('caixa-entradas').innerText = `R$ ${totalEntradas.toFixed(2).replace('.', ',')}`;
-                document.getElementById('caixa-saidas').innerText = `R$ ${totalSaidas.toFixed(2).replace('.', ',')}`;
-                const txtSaldo = document.getElementById('caixa-saldo');
-                txtSaldo.innerText = `R$ ${saldo.toFixed(2).replace('.', ',')}`;
-                if (saldo >= 0) { txtSaldo.className = "text-xl font-black text-emerald-800 mt-1"; }
-                else { txtSaldo.className = "text-xl font-black text-rose-800 mt-1"; }
-
-            } catch (err) { console.error('Erro no caixa:', err); }
+                
+                let entradas = 0, saidas = 0;
+                data.forEach(item => {
+                    if (item.tipo === 'entrada') entradas += Number(item.valor);
+                    else saidas += Number(item.valor);
+                });
+                
+                const saldo = entradas - saidas;
+                document.getElementById('caixa-entradas').innerText = `R$ ${entradas.toFixed(2).replace('.', ',')}`;
+                document.getElementById('caixa-saidas').innerText = `R$ ${saidas.toFixed(2).replace('.', ',')}`;
+                document.getElementById('caixa-saldo').innerText = `R$ ${saldo.toFixed(2).replace('.', ',')}`;
+            } catch (err) { console.error('Erro ao atualizar resumo do caixa:', err); }
         }
 
-        // LANÇAR MOVIMENTAÇÃO NO CAIXA
+        async function renderizarHistoricoCaixa() {
+            try {
+                const { data, error } = await supabase.from('caixa').select('*').order('criado_em', { ascending: false }).limit(20);
+                if (error) throw error;
+                
+                historicoCaixa.innerHTML = '';
+                if (data.length === 0) {
+                    historicoCaixa.innerHTML = '<p class="text-center text-stone-400 py-6">Nenhuma movimentação registrada.</p>';
+                    return;
+                }
+                
+                data.forEach(item => {
+                    const div = document.createElement('div');
+                    const data = new Date(item.criado_em).toLocaleDateString('pt-BR');
+                    const hora = new Date(item.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                    const valorFormatado = Number(item.valor).toFixed(2).replace('.', ',');
+                    
+                    div.className = 'flex justify-between items-center py-2';
+                    div.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm">${item.tipo === 'entrada' ? '🟢' : '🔴'}</span>
+                            <div>
+                                <p class="font-medium text-stone-700">${item.descricao}</p>
+                                <p class="text-[10px] text-stone-400">${data} às ${hora}</p>
+                            </div>
+                        </div>
+                        <span class="font-bold text-xs ${item.tipo === 'entrada' ? 'text-emerald-700' : 'text-rose-700'}">
+                            ${item.tipo === 'entrada' ? '+' : '-'} R$ ${valorFormatado}
+                        </span>
+                    `;
+                    historicoCaixa.appendChild(div);
+                });
+            } catch (err) { console.error('Erro ao carregar histórico do caixa:', err); }
+        }
+
         formCaixa.addEventListener('submit', async (e) => {
             e.preventDefault();
             const payload = {
@@ -419,20 +434,23 @@
                 valor: parseFloat(caixaValor.value),
                 tipo: caixaTipo.value
             };
-
+            
             try {
-                const { error } = await supabase.from('fluxo_caixa').insert([payload]);
+                const { error } = await supabase.from('caixa').insert([payload]);
                 if (error) throw error;
-
+                
                 formCaixa.reset();
-                renderizarCaixa();
+                atualizarResumoCaixa();
+                renderizarHistoricoCaixa();
+                alert('Movimentação registrada com sucesso! 💰');
             } catch (err) { alert('Erro ao lançar movimentação.'); }
         });
 
-        // INICIALIZAÇÃO GERAL DO PAINEL
+        // INICIALIZAÇÃO
         renderizarProdutos();
         renderizarAvaliacoes();
-        renderizarCaixa();
+        atualizarResumoCaixa();
+        renderizarHistoricoCaixa();
     </script>
 </body>
 </html>
