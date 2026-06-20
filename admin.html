@@ -24,7 +24,13 @@
         <p class="text-xs text-stone-500 mb-6">Insira a chave mestra de acesso</p>
         
         <input type="password" id="campo-chave-admin" placeholder="••••••••" 
-               class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-center text-sm focus:border-[#d9a05b] mb-4">
+               class="w-full p-3 border border-[#d1c7bd] rounded-xl outline-none bg-white text-center text-sm focus:border-[#d9a05b] mb-2">
+        
+        <div class="mb-4 text-right">
+            <button id="btn-esqueceu-senha" class="text-[11px] text-stone-400 hover:text-[#d9a05b] underline cursor-pointer transition">
+                Esqueceu a senha?
+            </button>
+        </div>
         
         <div class="flex gap-2">
             <button id="btn-entrar-painel" class="flex-1 py-3 bg-[#2b1a11] text-white text-xs font-bold uppercase rounded-xl cursor-pointer shadow-md transition active:scale-95">Entrar</button>
@@ -90,7 +96,7 @@
 </main>
 
 <script type="module">
-    // CONFIGURAÇÃO REAL DO SEU SUPABASE
+    // CONFIGURAÇÃO DO SEU SUPABASE
     const SUPABASE_URL = "https://chssifwpqrehztdyfssl.supabase.co";
     const SUPABASE_KEY = "sb_publishable_fRdHLOKe1zxnVbUgdqiB1g_i3LPqDSE"; 
 
@@ -103,11 +109,18 @@
     const btnVoltar = document.getElementById('btn-voltar-site');
     const btnLogout = document.getElementById('btn-logout');
     const btnVoltarRodape = document.getElementById('btn-voltar-rodape');
+    const btnEsqueceuSenha = document.getElementById('btn-esqueceu-senha');
 
     campoChave.focus();
 
+    // Redireciona de volta para o index
+    function irParaCardapio() {
+        window.location.href = 'index.html'; 
+    }
+
     function realizarLoginAdmin() {
-        if (campoChave.value.trim() === 'admin') {
+        // Remove espaços acidentais do mobile e ignora maiúsculas/minúsculas
+        if (campoChave.value.trim().toLowerCase() === 'admin') {
             modalAutenticacao.classList.add('hidden'); 
             conteudoPainel.classList.remove('hidden'); 
             carregarDadosPainel(); 
@@ -117,13 +130,19 @@
         }
     }
 
+    // Eventos de Autenticação
     btnEntrar.addEventListener('click', realizarLoginAdmin);
     campoChave.addEventListener('keypress', (e) => { if (e.key === 'Enter') realizarLoginAdmin(); });
     
-    // Ações de redirecionamento para o site público
-    btnVoltar.addEventListener('click', () => { window.location.href = 'index.html'; });
-    btnLogout.addEventListener('click', () => { window.location.href = 'index.html'; });
-    btnVoltarRodape.addEventListener('click', () => { window.location.href = 'index.html'; });
+    // A Pegadinha da Mônica 🌟
+    btnEsqueceuSenha.addEventListener('click', () => {
+        alert('Pergunta pra Mônica! 😀😃');
+    });
+
+    // Cliques de Voltar conectados à mesma função
+    btnVoltar.addEventListener('click', irParaCardapio);
+    btnLogout.addEventListener('click', irParaCardapio);
+    btnVoltarRodape.addEventListener('click', irParaCardapio);
 
     function carregarDadosPainel() {
         listarProdutosAdmin();
@@ -164,7 +183,7 @@
         } catch (e) { container.innerHTML = '<p class="text-red-700 text-center text-xs">Erro na conexão do catálogo.</p>'; }
     }
 
-    // SALVAR NOVO SABOR (BLINDADO CONTRA RESET DE TELA MOBILE)
+    // SALVAR NOVO SABOR (BLINDADO CONTRA REFRESH)
     document.getElementById('form-novo-sabor').addEventListener('submit', async (e) => {
         e.preventDefault(); 
         e.stopPropagation();
