@@ -22,13 +22,16 @@
         .watermark {
             position: fixed; bottom: 15px; right: 20px;
             color: var(--cor-texto-escuro); font-size: 0.75em; opacity: 0.3;
-            z-index: 999; pointer-events: none; font-weight: 600; letter-spacing: 0.5px;
+            z-index: 999; cursor: pointer; font-weight: 600; letter-spacing: 0.5px;
+            transition: opacity 0.2s;
         }
+        .watermark:hover { opacity: 0.8; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between">
 
-<div class="watermark">by VR Web Solutions</div>
+<!-- MARCA D'ÁGUA COM ACESSO SECRETO -->
+<div class="watermark" id="atalho-admin">by VR Web Solutions</div>
 
 <!-- TOP BAR INFORMATIVO -->
 <div class="bg-[#2b1a11] text-[#fcf9f2] text-xs py-2 px-4 flex flex-wrap justify-between items-center gap-2 md:px-12 border-b border-white/5">
@@ -195,7 +198,7 @@
 </footer>
 
 <script type="module">
-    // ⚙️ CONFIGURAÇÃO DO WHATSAPP DE VENDAS ATUALIZADO
+    // ⚙️ CONFIGURAÇÃO DO WHATSAPP DE VENDAS
     const ADMIN_WHATSAPP = "5588992721857"; 
 
     // CONFIGURAÇÃO REAL DO SEU SUPABASE
@@ -205,6 +208,14 @@
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let notaSelecionada = 5;
+
+    // LÓGICA DO ATALHO SECRETO PARA O ADMIN
+    document.getElementById('atalho-admin').addEventListener('click', () => {
+        const senha = prompt('Digite o código de acesso:');
+        if (senha === 'admin') {
+            window.location.href = 'admin.html';
+        }
+    });
 
     async function registrarVendaPendente(produto, preco) {
         const precoNum = parseFloat(preco.toString().replace('R$', '').replace(/\s/g, '').replace(',', '.'));
@@ -221,8 +232,8 @@
     }
 
     function abrirWhatsApp(produto, preco) {
-        const resumo = `Olá! Gostaria de pedir esse sabor maravilhoso que vi no site:\n\n🍦 Sabor: ${produto}\n💰 Valor: R$ ${preco}\n📍 Entrega: Sobral - CE\n\nPoderia verificar o tempo de entrega?`;
-        window.location.href = `https://wa.me/${ADMIN_WHATSAPP}?text=${encodeURIComponent(resumo)}`;
+        const resumen = `Olá! Gostaria de pedir esse sabor maravilhoso que vi no site:\n\n🍦 Sabor: ${produto}\n💰 Valor: R$ ${preco}\n📍 Entrega: Sobral - CE\n\nPoderia verificar o tempo de entrega?`;
+        window.location.href = `https://wa.me/${ADMIN_WHATSAPP}?text=${encodeURIComponent(resumen)}`;
     }
 
     // CARREGAR PRODUTOS DO BANCO
